@@ -1,7 +1,7 @@
 import {
   crearEstadoCuentaBancaria,
   prepararPayloadCuentaBancaria,
-} from '../../components/catalogos-tenant/CuentaBancaria.Form.jsx';
+} from '../../components/catalogos-tenant/CuentaBancariaForm.jsx';
 
 export function crearModeloCuentasBancariasPage(cuentas = []) {
   return {

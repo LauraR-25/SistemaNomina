@@ -1,7 +1,7 @@
 import {
   crearEstadoLoginInicial,
   enviarLogin,
-} from '../../components/auth-rbac/LoginForms.jsx';
+} from '../../components/auth-rbac/LoginForm.jsx';
 
 export function crearModeloLoginPage() {
   return {
