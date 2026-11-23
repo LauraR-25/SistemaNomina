@@ -1,10 +1,17 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import app, {
+  crearEstadoAppInicial,
+  ejecutarFlujoLogin,
+  aceptarSeguridadNomina,
+} from './App.jsx';
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+export const estadoInicial = crearEstadoAppInicial();
+
+export async function iniciarSesionApp(username, password, estadoPrevio = estadoInicial) {
+  return ejecutarFlujoLogin(estadoPrevio, { username, password });
+}
+
+export function confirmarSeguridadNominaApp(estadoPrevio) {
+  return aceptarSeguridadNomina(estadoPrevio);
+}
+
+export default app;
