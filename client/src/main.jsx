@@ -3,6 +3,7 @@ import app, {
   ejecutarFlujoLogin,
   aceptarSeguridadNomina,
   navegarEnApp,
+  cerrarSesionEnApp,
 } from './App.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 
@@ -18,6 +19,10 @@ export function confirmarSeguridadNominaApp(estadoPrevio) {
 
 export function cambiarRutaApp(estadoPrevio, rutaDestino) {
   return navegarEnApp(estadoPrevio, rutaDestino);
+}
+
+export function salirApp() {
+  return cerrarSesionEnApp('/login');
 }
 
 export { AuthProvider };

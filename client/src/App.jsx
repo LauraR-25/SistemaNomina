@@ -3,20 +3,31 @@ import {
   crearEstadoLoginInicial,
 } from './components/auth-rbac/LoginForms.jsx';
 import { resolverRuta } from './router/AppRouter.jsx';
+import { construirModeloLayout } from './layouts/MainLayout.jsx';
+import { configurarSesionApi } from './services/api.js';
 
 export function crearEstadoAppInicial(rutaInicial = '/login') {
   const login = crearEstadoLoginInicial();
   const sesion = null;
   const seguridadNominaAceptada = false;
 
+  configurarSesionApi(sesion);
+
+  const navegacion = resolverRuta({
+    path: rutaInicial,
+    sesion,
+    seguridadNominaAceptada,
+  });
+
   return {
     login,
     sesion,
     seguridadNominaAceptada,
-    navegacion: resolverRuta({
-      path: rutaInicial,
+    navegacion,
+    layout: construirModeloLayout({
       sesion,
       seguridadNominaAceptada,
+      rutaActual: navegacion.ruta,
     }),
   };
 }
@@ -40,6 +51,13 @@ export async function ejecutarFlujoLogin(estadoActual, credenciales) {
   if (!resultado.ok) {
     const sesionNula = null;
     const seguridadAceptada = false;
+    configurarSesionApi(sesionNula);
+
+    const navegacion = resolverRuta({
+      path: '/login',
+      sesion: sesionNula,
+      seguridadNominaAceptada: seguridadAceptada,
+    });
 
     return {
       ...estadoCargando,
@@ -53,15 +71,23 @@ export async function ejecutarFlujoLogin(estadoActual, credenciales) {
           mensaje: resultado.message,
         },
       },
-      navegacion: resolverRuta({
-        path: '/login',
+      navegacion,
+      layout: construirModeloLayout({
         sesion: sesionNula,
         seguridadNominaAceptada: seguridadAceptada,
+        rutaActual: navegacion.ruta,
       }),
     };
   }
 
   const seguridadAceptada = false;
+  configurarSesionApi(resultado.sesion);
+
+  const navegacion = resolverRuta({
+    path: '/seguridad-nomina',
+    sesion: resultado.sesion,
+    seguridadNominaAceptada: seguridadAceptada,
+  });
 
   return {
     ...estadoCargando,
@@ -75,10 +101,11 @@ export async function ejecutarFlujoLogin(estadoActual, credenciales) {
         mensaje: resultado.message,
       },
     },
-    navegacion: resolverRuta({
-      path: '/seguridad-nomina',
+    navegacion,
+    layout: construirModeloLayout({
       sesion: resultado.sesion,
       seguridadNominaAceptada: seguridadAceptada,
+      rutaActual: navegacion.ruta,
     }),
   };
 }
@@ -89,27 +116,44 @@ export function aceptarSeguridadNomina(estadoActual) {
   }
 
   const seguridadNominaAceptada = true;
+  const navegacion = resolverRuta({
+    path: '/inicio',
+    sesion: estadoActual.sesion,
+    seguridadNominaAceptada,
+  });
 
   return {
     ...estadoActual,
     seguridadNominaAceptada,
-    navegacion: resolverRuta({
-      path: '/inicio',
+    navegacion,
+    layout: construirModeloLayout({
       sesion: estadoActual.sesion,
       seguridadNominaAceptada,
+      rutaActual: navegacion.ruta,
     }),
   };
 }
 
 export function navegarEnApp(estadoActual, rutaDestino) {
+  const navegacion = resolverRuta({
+    path: rutaDestino,
+    sesion: estadoActual.sesion,
+    seguridadNominaAceptada: estadoActual.seguridadNominaAceptada,
+  });
+
   return {
     ...estadoActual,
-    navegacion: resolverRuta({
-      path: rutaDestino,
+    navegacion,
+    layout: construirModeloLayout({
       sesion: estadoActual.sesion,
       seguridadNominaAceptada: estadoActual.seguridadNominaAceptada,
+      rutaActual: navegacion.ruta,
     }),
   };
+}
+
+export function cerrarSesionEnApp(rutaInicial = '/login') {
+  return crearEstadoAppInicial(rutaInicial);
 }
 
 export default {
@@ -117,4 +161,5 @@ export default {
   ejecutarFlujoLogin,
   aceptarSeguridadNomina,
   navegarEnApp,
+  cerrarSesionEnApp,
 };
