@@ -1,79 +1,66 @@
-import {
-  crearEstadoLoginInicial,
-  enviarLogin,
-} from '../../components/auth-rbac/LoginForm.jsx';
+import { useEffect, useRef } from 'react';
+import { LoginForm } from '../../components/auth-rbac/LoginForm/index.js';
+import { Loader } from '../../components/common/feedback/Loader/index.js';
+import { AuthLayout } from '../../layouts/AuthLayout.jsx';
+import { useAuth } from '../../hooks/auth-rbac/useAuth.js';
+import { resolverNotificacionLogin } from './loginPage.model.js';
+import styles from './LoginPage.module.css';
 
-export function crearModeloLoginPage() {
-  return {
-    titulo: 'Acceso al Sistema',
-    formulario: crearEstadoLoginInicial(),
-    seguridadNominaVisible: false,
-    seguridadNominaAceptada: false,
-    sesion: null,
-  };
-}
-
-export async function procesarLoginPage(modeloActual, { username, password }) {
-  const cargando = {
-    ...modeloActual,
-    formulario: {
-      ...modeloActual.formulario,
-      username,
-      password,
-      loading: true,
-      notificacion: null,
-    },
-  };
-
-  const resultado = await enviarLogin({ username, password });
-
-  if (!resultado.ok) {
-    return {
-      ...cargando,
-      sesion: null,
-      seguridadNominaVisible: false,
-      seguridadNominaAceptada: false,
-      formulario: {
-        ...cargando.formulario,
-        loading: false,
-        notificacion: {
-          tipo: 'error',
-          mensaje: resultado.message,
-        },
-      },
-    };
-  }
-
-  return {
-    ...cargando,
-    sesion: resultado.sesion,
-    seguridadNominaVisible: true,
-    seguridadNominaAceptada: false,
-    formulario: {
-      ...cargando.formulario,
-      loading: false,
-      notificacion: {
-        tipo: 'exito',
-        mensaje: resultado.message,
-      },
-    },
-  };
-}
-
-export function confirmarSeguridadNominaPage(modeloActual) {
-  if (!modeloActual.sesion) {
-    return modeloActual;
-  }
-
-  return {
-    ...modeloActual,
-    seguridadNominaVisible: false,
-    seguridadNominaAceptada: true,
-  };
-}
-
-export default {
+export {
   crearModeloLoginPage,
   procesarLoginPage,
   confirmarSeguridadNominaPage,
-};
+  obtenerMensajeLogin,
+  resolverNotificacionLogin,
+} from './loginPage.model.js';
+
+export function LoginPage({ onContinuar }) {
+  const { iniciarSesion, loading, notificacion } = useAuth();
+  const temporizador = useRef(null);
+
+  useEffect(
+    () => () => {
+      if (temporizador.current) {
+        clearTimeout(temporizador.current);
+      }
+    },
+    []
+  );
+
+  async function manejarEnvio(credenciales) {
+    if (temporizador.current) {
+      clearTimeout(temporizador.current);
+      temporizador.current = null;
+    }
+
+    const resultado = await iniciarSesion(credenciales);
+
+    if (resultado?.ok && typeof onContinuar === 'function') {
+      temporizador.current = setTimeout(onContinuar, 1100);
+    }
+  }
+
+  const notificacionVisible = resolverNotificacionLogin(notificacion);
+
+  return (
+    <AuthLayout>
+      <div className={styles.pagina}>
+        <LoginForm
+          onSubmit={manejarEnvio}
+          loading={loading}
+          notificacion={notificacionVisible}
+        />
+
+        <p className={styles.contacto}>
+          ¿Problemas para acceder? Contacta al administrador
+        </p>
+      </div>
+
+      {loading && (
+        <Loader variant="pantalla" size="lg" mensaje="Autenticando..." />
+      )}
+    </AuthLayout>
+  );
+}
+
+export default LoginPage;

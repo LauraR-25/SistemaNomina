@@ -1,0 +1,45 @@
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.cabecera {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.etiqueta {
+  color: var(--accent);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.titulo {
+  font-size: var(--text-3xl);
+}
+
+.descripcion {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+}
+
+.campos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.alerta {
+  margin-top: calc(var(--space-2) * -1);
+}
+
+@media (max-width: 640px) {
+  .titulo {
+    font-size: var(--text-2xl);
+  }
+}

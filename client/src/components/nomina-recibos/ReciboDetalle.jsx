@@ -1,15 +1,6 @@
-export function calcularTotalesRecibo(conceptos = []) {
-  const asignaciones = conceptos
-    .filter((c) => c.naturaleza === 'CREDITO' || c.tipo === 'ASIGNACION')
-    .reduce((acc, c) => acc + Number(c.monto || 0), 0);
+import modelo from './ReciboDetalle/reciboDetalle.model.js';
 
-  const deducciones = conceptos
-    .filter((c) => c.naturaleza === 'DEBITO' || c.tipo === 'DEDUCCION')
-    .reduce((acc, c) => acc + Number(c.monto || 0), 0);
+export * from './ReciboDetalle/reciboDetalle.model.js';
+export { ReciboDetalle } from './ReciboDetalle/index.js';
 
-  return {
-    asignaciones,
-    deducciones,
-    neto: asignaciones - deducciones,
-  };
-}
+export default modelo;

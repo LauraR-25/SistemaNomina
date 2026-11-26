@@ -1,0 +1,4 @@
+.vigente {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}

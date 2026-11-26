@@ -1,9 +1,7 @@
-import {
-  enviarLogin,
-  crearEstadoLoginInicial,
-} from './components/auth-rbac/LoginForm.jsx';
+import { enviarLogin } from './services/auth-rbac.service.js';
+import { crearEstadoLoginInicial } from './components/auth-rbac/LoginForm/loginForm.model.js';
 import { resolverRuta } from './router/AppRouter.jsx';
-import { construirModeloLayout } from './layouts/MainLayout.jsx';
+import { construirModeloLayout } from './layouts/mainLayout.model.js';
 import { configurarSesionApi } from './services/api.js';
 
 export function crearEstadoAppInicial(rutaInicial = '/login') {

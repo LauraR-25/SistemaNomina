@@ -1,0 +1,54 @@
+.badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+}
+
+.icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+}
+
+.datos {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nombre {
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detalle {
+  display: flex;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.rif {
+  font-variant-numeric: tabular-nums;
+}
+
+.moneda {
+  color: var(--accent);
+  font-weight: var(--weight-semibold);
+}
+
+@media (max-width: 767px) {
+  .detalle {
+    display: none;
+  }
+}

@@ -1,15 +1,6 @@
-export function agruparOpcionesPorSubsistema(opciones = []) {
-  return opciones.reduce((acc, item) => {
-    const grupo = item.subsistema || 'General';
-    if (!acc[grupo]) acc[grupo] = [];
-    acc[grupo].push(item);
-    return acc;
-  }, {});
-}
+import modelo from './PermisosTree/permisosTree.model.js';
 
-export function alternarSeleccionOpcion(seleccionados = [], opcionId) {
-  if (seleccionados.includes(opcionId)) {
-    return seleccionados.filter((id) => id !== opcionId);
-  }
-  return [...seleccionados, opcionId];
-}
+export * from './PermisosTree/permisosTree.model.js';
+export { PermisosTree } from './PermisosTree/index.js';
+
+export default modelo;

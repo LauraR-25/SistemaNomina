@@ -1,0 +1,73 @@
+.contenedor {
+  width: 100%;
+  min-width: 0;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: var(--font-sans);
+  overflow: visible;
+}
+
+.rejilla {
+  stroke: var(--border-subtle);
+  stroke-width: 1;
+}
+
+.ejeLinea {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.eje,
+.etiqueta {
+  fill: var(--text-secondary);
+  font-size: 10px;
+}
+
+.eje {
+  text-anchor: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.etiqueta {
+  text-anchor: middle;
+}
+
+.grupo:focus {
+  outline: none;
+}
+
+.grupo:focus-visible .barra {
+  stroke: var(--focus-ring);
+  stroke-width: 2;
+}
+
+.barra {
+  transition: opacity var(--motion-fast, 150ms) ease;
+}
+
+.grupo:hover .barra,
+.barraActiva {
+  opacity: 0.82;
+}
+
+.tooltipFondo {
+  fill: var(--bg-card);
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.tooltipTexto {
+  fill: var(--text-primary);
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+  text-anchor: middle;
+  font-variant-numeric: tabular-nums;
+}
+
+.vacio {
+  width: 100%;
+}

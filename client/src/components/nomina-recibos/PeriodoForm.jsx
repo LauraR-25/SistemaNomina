@@ -1,15 +1,6 @@
-export function crearEstadoPeriodo(initialData = {}) {
-  return {
-    descripcion: initialData.descripcion || '',
-    fecha_inicio: initialData.fecha_inicio || '',
-    fecha_fin: initialData.fecha_fin || '',
-  };
-}
+import modelo from './PeriodoForm/periodoForm.model.js';
 
-export function prepararPayloadPeriodo(estado) {
-  return {
-    descripcion: String(estado.descripcion || '').trim(),
-    fecha_inicio: estado.fecha_inicio,
-    fecha_fin: estado.fecha_fin,
-  };
-}
+export * from './PeriodoForm/periodoForm.model.js';
+export { PeriodoForm } from './PeriodoForm/index.js';
+
+export default modelo;

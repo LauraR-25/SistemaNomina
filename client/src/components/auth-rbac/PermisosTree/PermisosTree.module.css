@@ -1,0 +1,97 @@
+.arbol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+}
+
+.cabecera {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.titulo {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.05rem;
+}
+
+.descripcion {
+  margin: var(--space-1) 0 0;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.grupos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.grupo {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.grupoHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--hover-overlay);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.grupoCheck {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.opciones {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.opcion {
+  min-width: 0;
+}
+
+.etiquetaOpcion {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.etiquetaOpcion strong {
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.etiquetaOpcion small {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+.vacio {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 720px) {
+  .opciones {
+    grid-template-columns: 1fr;
+  }
+}

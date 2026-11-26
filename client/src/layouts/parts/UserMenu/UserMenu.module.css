@@ -1,0 +1,54 @@
+.contenedor {
+  position: relative;
+}
+
+.disparador {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 220px;
+  padding: var(--space-1) var(--space-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.disparador:hover {
+  background: var(--hover-overlay);
+}
+
+.datos {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nombre {
+  overflow: hidden;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.perfil {
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.usuario {
+  color: var(--accent);
+}
+
+@media (max-width: 767px) {
+  .datos {
+    display: none;
+  }
+}

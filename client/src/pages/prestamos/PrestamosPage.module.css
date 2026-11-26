@@ -1,0 +1,17 @@
+.pagina {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.contenido {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}

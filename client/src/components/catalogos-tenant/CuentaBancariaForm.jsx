@@ -1,15 +1,6 @@
-export function crearEstadoCuentaBancaria(initialData = {}) {
-  return {
-    banco_id: initialData.banco_id || '',
-    numero_cuenta: initialData.numero_cuenta || '',
-    tipo_cuenta: initialData.tipo_cuenta || 'CORRIENTE',
-  };
-}
+export {
+  crearEstadoCuentaBancaria,
+  prepararPayloadCuentaBancaria,
+} from './CuentaBancariaForm/cuentaBancariaForm.model.js';
 
-export function prepararPayloadCuentaBancaria(estado) {
-  return {
-    banco_id: estado.banco_id,
-    numero_cuenta: String(estado.numero_cuenta || '').trim(),
-    tipo_cuenta: estado.tipo_cuenta || 'CORRIENTE',
-  };
-}
+export { CuentaBancariaForm } from './CuentaBancariaForm/index.js';

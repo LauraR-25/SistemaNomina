@@ -1,0 +1,26 @@
+.usuario {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.perfiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.bloqueo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.fechaBloqueo {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.sinBloqueo {
+  color: var(--text-secondary);
+}

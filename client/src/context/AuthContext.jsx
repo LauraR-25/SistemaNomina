@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, createElement } from 'react';
-import { enviarLogin } from '../components/auth-rbac/LoginForm.jsx';
+import { enviarLogin } from '../services/auth-rbac.service.js';
 
 const STORAGE_KEY = 'nomina_sesion';
 

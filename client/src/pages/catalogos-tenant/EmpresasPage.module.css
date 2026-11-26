@@ -1,0 +1,23 @@
+.pagina {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.contenido {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.aviso {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}

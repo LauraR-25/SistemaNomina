@@ -1,0 +1,21 @@
+.identificador {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.principal {
+  color: var(--text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+.secundario {
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}

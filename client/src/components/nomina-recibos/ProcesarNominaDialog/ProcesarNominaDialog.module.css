@@ -1,0 +1,32 @@
+.resumen {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.confirmacion {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.confirmacion input {
+  accent-color: var(--accent);
+}
+
+.error {
+  display: block;
+  margin-top: var(--space-2);
+  color: var(--danger);
+  font-size: var(--text-xs);
+}
+
+.procesando {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}

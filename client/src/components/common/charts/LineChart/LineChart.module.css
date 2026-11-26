@@ -1,0 +1,77 @@
+.contenedor {
+  width: 100%;
+  min-width: 0;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: var(--font-sans);
+  overflow: visible;
+}
+
+.rejilla {
+  stroke: var(--border-subtle);
+  stroke-width: 1;
+}
+
+.ejeLinea {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.eje,
+.etiqueta {
+  fill: var(--text-secondary);
+  font-size: 10px;
+}
+
+.eje {
+  text-anchor: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.etiqueta {
+  text-anchor: middle;
+}
+
+.tooltipFondo {
+  fill: var(--bg-card);
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.tooltipTexto {
+  fill: var(--text-primary);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2) var(--space-4);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+}
+
+.leyendaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.muestra {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.vacio {
+  width: 100%;
+}
