@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { LoginForm } from '../../components/auth-rbac/LoginForm/index.js';
 import { Loader } from '../../components/common/feedback/Loader/index.js';
 import { AuthLayout } from '../../layouts/AuthLayout.jsx';
@@ -6,17 +6,10 @@ import { useAuth } from '../../hooks/auth-rbac/useAuth.js';
 import { resolverNotificacionLogin } from './loginPage.model.js';
 import styles from './LoginPage.module.css';
 
-export {
-  crearModeloLoginPage,
-  procesarLoginPage,
-  confirmarSeguridadNominaPage,
-  obtenerMensajeLogin,
-  resolverNotificacionLogin,
-} from './loginPage.model.js';
-
 export function LoginPage({ onContinuar }) {
   const { iniciarSesion, loading, notificacion } = useAuth();
   const temporizador = useRef(null);
+  const [estadoLogin, setEstadoLogin] = useState(null);
 
   useEffect(
     () => () => {
@@ -34,13 +27,17 @@ export function LoginPage({ onContinuar }) {
     }
 
     const resultado = await iniciarSesion(credenciales);
+    setEstadoLogin({ status: resultado?.status });
 
     if (resultado?.ok && typeof onContinuar === 'function') {
       temporizador.current = setTimeout(onContinuar, 1100);
     }
   }
 
-  const notificacionVisible = resolverNotificacionLogin(notificacion);
+  const notificacionVisible = resolverNotificacionLogin(
+    notificacion,
+    estadoLogin?.status
+  );
 
   return (
     <AuthLayout>

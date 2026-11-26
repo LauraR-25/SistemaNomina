@@ -26,11 +26,6 @@ import {
 } from './contratosPage.model.js';
 import styles from './ContratosPage.module.css';
 
-export {
-  crearModeloContratosPage,
-  agregarContratoModelo,
-} from './contratosPage.model.js';
-
 const FILTROS_ESTADO = [
   { value: 'VIGENTE', label: 'Vigentes' },
   { value: 'SUSPENDIDO', label: 'Suspendidos' },

@@ -29,11 +29,6 @@ import {
 } from './registroHorasPage.model.js';
 import styles from './RegistroHorasPage.module.css';
 
-export {
-  crearModeloRegistroHorasPage,
-  agregarRegistroHorasModelo,
-} from './registroHorasPage.model.js';
-
 const FILTROS_ESTADO = [
   { value: 'PENDIENTE', label: 'Pendientes' },
   { value: 'APROBADO', label: 'Aprobados' },

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ConfirmDialog } from '../../common/overlays/ConfirmDialog/index.js';
 import { Modal } from '../../common/overlays/Modal/index.js';
 import { ProgressBar } from '../../common/feedback/ProgressBar/index.js';
@@ -7,7 +7,16 @@ import { formatMoneda } from '../../../utils/formatters.js';
 import { etiquetaPeriodo, numero } from '../nominaRecibos.helpers.js';
 import styles from './ProcesarNominaDialog.module.css';
 
-export function ProcesarNominaDialog({
+export function ProcesarNominaDialog(props) {
+  return (
+    <ProcesarNominaDialogContenido
+      key={props.abierto ? 'abierto' : 'cerrado'}
+      {...props}
+    />
+  );
+}
+
+function ProcesarNominaDialogContenido({
   abierto = false,
   periodo,
   empleados = 0,
@@ -22,13 +31,6 @@ export function ProcesarNominaDialog({
   const cantidadEmpleados = Array.isArray(empleados)
     ? empleados.length
     : numero(empleados);
-
-  useEffect(() => {
-    if (!abierto) {
-      setConfirmado(false);
-      setIntento(false);
-    }
-  }, [abierto]);
 
   function confirmar() {
     if (procesando) return;

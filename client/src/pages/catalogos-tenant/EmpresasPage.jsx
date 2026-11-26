@@ -21,8 +21,6 @@ import {
 } from './empresasPage.model.js';
 import styles from './EmpresasPage.module.css';
 
-export { crearModeloEmpresasPage, registrarEmpresaPage } from './empresasPage.model.js';
-
 const MONEDAS = [
   { value: 'VES', label: 'VES' },
   { value: 'USD', label: 'USD' },

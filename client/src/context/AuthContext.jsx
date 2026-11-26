@@ -1,4 +1,5 @@
-import { createContext, useState, useEffect, createElement } from 'react';
+import { createContext, useState, useEffect, useLayoutEffect, createElement } from 'react';
+import { configurarSesionApi } from '../services/api.js';
 import { enviarLogin } from '../services/auth-rbac.service.js';
 
 const STORAGE_KEY = 'nomina_sesion';
@@ -18,6 +19,10 @@ export function AuthProvider({ children }) {
   const [seguridadNominaAceptada, setSeguridadNominaAceptada] = useState(false);
   const [notificacion, setNotificacion] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  useLayoutEffect(() => {
+    configurarSesionApi(sesion);
+  }, [sesion]);
 
   useEffect(() => {
     try {

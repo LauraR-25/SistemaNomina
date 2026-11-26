@@ -22,11 +22,6 @@ import {
 } from './cargosPage.model.js';
 import styles from './CargosPage.module.css';
 
-export {
-  crearModeloCargosPage,
-  agregarCargoModelo,
-} from './cargosPage.model.js';
-
 const FILTROS_ESTADO = [
   { value: 'ACTIVO', label: 'Activos' },
   { value: 'INACTIVO', label: 'Inactivos' },

@@ -23,11 +23,6 @@ import {
 } from './personasPage.model.js';
 import styles from './PersonasPage.module.css';
 
-export {
-  crearModeloPersonasPage,
-  registrarPersonaPage,
-} from './personasPage.model.js';
-
 const FILTROS_ESTADO = [
   { value: 'ACTIVO', label: 'Activos' },
   { value: 'INACTIVO', label: 'Inactivos' },

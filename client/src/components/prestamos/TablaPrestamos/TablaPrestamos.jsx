@@ -3,6 +3,7 @@ import { Badge } from '../../common/ui/Badge/index.js';
 import { ProgressBar } from '../../common/feedback/ProgressBar/index.js';
 import { StatusBadge } from '../../common/ui/StatusBadge/index.js';
 import { formatFecha, formatMoneda } from '../../../utils/formatters.js';
+import { porcentajePagado } from './tablaPrestamos.model.js';
 import styles from './TablaPrestamos.module.css';
 
 const ETIQUETAS_MODALIDAD = {
@@ -17,21 +18,6 @@ function nombrePersona(persona) {
   return [persona.primer_nombre, persona.primer_apellido]
     .filter(Boolean)
     .join(' ');
-}
-
-function numero(valor) {
-  const resultado = Number(valor);
-  return Number.isFinite(resultado) ? resultado : 0;
-}
-
-export function porcentajePagado(prestamo) {
-  const monto = numero(prestamo.monto_aprobado ?? prestamo.monto_total);
-  if (monto <= 0) return 0;
-
-  const saldo = numero(prestamo.saldo_pendiente ?? monto);
-  const pagado = Math.max(0, monto - saldo);
-
-  return Math.min(100, Math.round((pagado / monto) * 100));
 }
 
 export function TablaPrestamos({

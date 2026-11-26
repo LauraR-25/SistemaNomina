@@ -26,23 +26,14 @@ import {
   crearModeloPrenominaPage,
   generarPrenominaLocal,
 } from './prenominaPage.model.js';
-import modelo from './prenominaPage.model.js';
 import styles from './PrenominaPage.module.css';
-
-export {
-  crearModeloPrenominaPage,
-  actualizarPrenominaModelo,
-} from './prenominaPage.model.js';
 
 export function PrenominaPage({ onNavegar }) {
   const { notificar } = useNotificacion();
   const { empresa } = useAuth();
   const { periodos, cargarPeriodos } = usePeriodos(empresa?.id);
   const { personas, cargarPersonas } = usePersonas(empresa?.id);
-  const { filas, loading, error, cargarPrenomina } = usePrenomina();
-  const [modeloPagina, setModelo] = useState(() =>
-    crearModeloPrenominaPage()
-  );
+  const { loading, error, cargarPrenomina } = usePrenomina();
   const [periodoId, setPeriodoId] = useState(
     () => sessionStorage.getItem('periodoActivoId') ?? ''
   );
@@ -60,20 +51,17 @@ export function PrenominaPage({ onNavegar }) {
     []
   );
 
-  useEffect(() => {
-    if (periodos.length === 0) return;
-    if (!periodos.some((periodo) => String(periodo.id) === String(periodoId))) {
-      setPeriodoId(String(periodos[0].id));
-    }
-  }, [periodos, periodoId]);
-
-  const periodoActivo = useMemo(
-    () =>
+  const { periodoActivo, periodoIdValido } = useMemo(() => {
+    const periodo =
       periodos.find(
-        (periodo) => String(periodo.id) === String(periodoId)
-      ) ?? null,
-    [periodos, periodoId]
-  );
+        (item) => String(item.id) === String(periodoId)
+      ) ?? periodos[0] ?? null;
+
+    return {
+      periodoActivo: periodo,
+      periodoIdValido: periodo ? String(periodo.id) : periodoId,
+    };
+  }, [periodos, periodoId]);
 
   const filasGeneradas = useMemo(
     () =>
@@ -83,23 +71,22 @@ export function PrenominaPage({ onNavegar }) {
     [periodoActivo, personas]
   );
 
-  useEffect(() => {
-    cargarPrenomina(filasGeneradas);
-    setModelo((actual) =>
-      actualizarPrenominaModelo(
-        actual,
-        filasGeneradas,
-        periodoActivo
-          ? periodoActivo.ejecucion ?? {
-              estado: 'CALCULADA',
-              numero_ejecucion: 1,
-            }
-          : null
-      )
-    );
-  }, [filasGeneradas, periodoActivo, cargarPrenomina]);
+  const modeloPagina = useMemo(() => {
+    const ejecucion = periodoActivo
+      ? periodoActivo.ejecucion ?? {
+          estado: 'CALCULADA',
+          numero_ejecucion: 1,
+        }
+      : null;
 
-  const tabla = useTablaControles(filas, {
+    return actualizarPrenominaModelo(
+      crearModeloPrenominaPage(),
+      filasGeneradas,
+      ejecucion
+    );
+  }, [filasGeneradas, periodoActivo]);
+
+  const tabla = useTablaControles(filasGeneradas, {
     campos: ['nombre', 'empleado.cedula', 'asignaciones', 'deducciones', 'neto'],
   });
 
@@ -146,7 +133,9 @@ export function PrenominaPage({ onNavegar }) {
         actions={
           <Button
             iconLeft="clipboard"
-            disabled={!periodoActivo || filas.length === 0 || procesando}
+            disabled={
+              !periodoActivo || filasGeneradas.length === 0 || procesando
+            }
             loading={procesando}
             onClick={() => setDialogoAbierto(true)}
           >
@@ -167,7 +156,7 @@ export function PrenominaPage({ onNavegar }) {
         filters={
           <Select
             size="sm"
-            value={periodoId}
+            value={periodoIdValido}
             onChange={(evento) => cambiarPeriodo(evento.target.value)}
             options={opcionesPeriodos}
             placeholder="Seleccione un período"
@@ -176,7 +165,7 @@ export function PrenominaPage({ onNavegar }) {
         }
       />
 
-      {filas.length === 0 ? (
+      {filasGeneradas.length === 0 ? (
         <EmptyState
           titulo="Selecciona un período para ver su prenómina"
           mensaje="El cálculo se muestra localmente mientras el endpoint de prenómina está pendiente."
@@ -185,7 +174,7 @@ export function PrenominaPage({ onNavegar }) {
       ) : (
         <div className={styles.contenido}>
           <ResumenPrenomina
-            filas={filas}
+            filas={filasGeneradas}
             resumen={modeloPagina.resumen}
             ejecucion={modeloPagina.ejecucion}
             moneda={moneda}
@@ -216,7 +205,7 @@ export function PrenominaPage({ onNavegar }) {
       <ProcesarNominaDialog
         abierto={dialogoAbierto}
         periodo={periodoActivo}
-        empleados={filas.length}
+        empleados={filasGeneradas.length}
         netoTotal={modeloPagina.resumen.totalNeto}
         moneda={moneda}
         procesando={procesando}
@@ -227,4 +216,4 @@ export function PrenominaPage({ onNavegar }) {
   );
 }
 
-export default modelo;
+export default PrenominaPage;

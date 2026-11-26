@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { PermisosTree } from '../../components/auth-rbac/PermisosTree/index.js';
 import {
   Badge,
@@ -12,26 +12,14 @@ import cx from '../../utils/cx.js';
 import {
   crearModeloPermisosPage,
   generarOpcionesLocales,
-  reemplazarSeleccionPermisos,
   seleccionDemostracionPermisos,
 } from './permisosPage.model.js';
-import modelo from './permisosPage.model.js';
+import { generarPerfilesLocales } from './perfilesPage.model.js';
 import styles from './PermisosPage.module.css';
-
-export {
-  crearModeloPermisosPage,
-  actualizarPermisoSeleccionado,
-} from './permisosPage.model.js';
 
 export function PermisosPage({ onNavegar }) {
   const { notificar } = useNotificacion();
   const { perfiles, opciones } = usePermisos();
-  const [modeloPagina, setModelo] = useState(() =>
-    crearModeloPermisosPage()
-  );
-  const [perfilId, setPerfilId] = useState(null);
-  const [seleccionados, setSeleccionados] = useState([]);
-  const [soloLectura, setSoloLectura] = useState(false);
 
   const perfilesDisponibles = useMemo(
     () => generarPerfilesLocales(perfiles),
@@ -42,45 +30,49 @@ export function PermisosPage({ onNavegar }) {
     [opciones]
   );
 
+  const indicePerfilInicial = perfilesDisponibles.length > 0 ? 0 : -1;
+  const [perfilId, setPerfilId] = useState(() =>
+    indicePerfilInicial >= 0
+      ? String(perfilesDisponibles[0].id)
+      : null
+  );
+  const [seleccionados, setSeleccionados] = useState(() =>
+    Array.from(
+      new Set(
+        seleccionDemostracionPermisos(
+          opcionesLocales,
+          indicePerfilInicial
+        ).map(String)
+      )
+    )
+  );
+  const [soloLectura, setSoloLectura] = useState(false);
+
   const indicePerfil = perfilesDisponibles.findIndex(
     (perfil) => String(perfil.id) === String(perfilId)
   );
+  const indicePerfilActivo = indicePerfil >= 0 ? indicePerfil : 0;
 
-  useEffect(() => {
-    if (perfilesDisponibles.length === 0) return;
-    if (
-      !perfilesDisponibles.some(
-        (perfil) => String(perfil.id) === String(perfilId)
-      )
-    ) {
-      setPerfilId(String(perfilesDisponibles[0].id));
-    }
-  }, [perfilesDisponibles, perfilId]);
-
-  const seleccionInicial = useMemo(
-    () =>
-      seleccionDemostracionPermisos(
-        opcionesLocales,
-        indicePerfil >= 0 ? indicePerfil : 0
-      ),
-    [opcionesLocales, indicePerfil]
+  const modeloPagina = useMemo(
+    () => crearModeloPermisosPage(opcionesLocales, seleccionados),
+    [opcionesLocales, seleccionados]
   );
 
-  useEffect(() => {
-    const normalizados = Array.from(
-      new Set(seleccionInicial.map(String))
-    );
-    setSeleccionados(normalizados);
-  }, [seleccionInicial]);
+  const perfilActivo = perfilesDisponibles[indicePerfilActivo] ?? null;
 
-  useEffect(() => {
-    setModelo(
-      crearModeloPermisosPage(opcionesLocales, seleccionados)
-    );
-  }, [opcionesLocales, seleccionados]);
+  function cambiarPerfil(indice, id) {
+    const idTexto = String(id);
+    setPerfilId(idTexto);
+    if (idTexto === String(perfilId)) return;
 
-  const perfilActivo =
-    indicePerfil >= 0 ? perfilesDisponibles[indicePerfil] : null;
+    setSeleccionados(
+      Array.from(
+        new Set(
+          seleccionDemostracionPermisos(opcionesLocales, indice).map(String)
+        )
+      )
+    );
+  }
 
   function cambiarSeleccion(nuevos) {
     const normalizados = Array.from(
@@ -88,9 +80,6 @@ export function PermisosPage({ onNavegar }) {
     );
 
     setSeleccionados(normalizados);
-    setModelo((actual) =>
-      reemplazarSeleccionPermisos(actual, normalizados)
-    );
   }
 
   function guardarPermisos() {
@@ -126,7 +115,7 @@ export function PermisosPage({ onNavegar }) {
           </div>
 
           <div className={styles.lista}>
-            {perfilesDisponibles.map((perfil) => {
+            {perfilesDisponibles.map((perfil, indice) => {
               const activo = String(perfil.id) === String(perfilId);
 
               return (
@@ -137,7 +126,7 @@ export function PermisosPage({ onNavegar }) {
                     styles.perfil,
                     activo && styles.perfilActivo
                   )}
-                  onClick={() => setPerfilId(String(perfil.id))}
+                  onClick={() => cambiarPerfil(indice, perfil.id)}
                   aria-pressed={activo}
                 >
                   <strong>{perfil.nombre_perfil}</strong>
@@ -188,4 +177,4 @@ export function PermisosPage({ onNavegar }) {
   );
 }
 
-export default modelo;
+export default PermisosPage;

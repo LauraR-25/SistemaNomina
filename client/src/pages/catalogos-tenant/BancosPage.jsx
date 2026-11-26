@@ -15,11 +15,6 @@ import {
 } from './bancosPage.model.js';
 import styles from './BancosPage.module.css';
 
-export {
-  crearModeloBancosPage,
-  establecerBancosModelo,
-} from './bancosPage.model.js';
-
 const FILTROS_ESTADO = [
   { value: 'ACTIVO', label: 'Activos' },
   { value: 'INACTIVO', label: 'Inactivos' },

@@ -26,11 +26,6 @@ import {
 } from './prestamosPage.model.js';
 import styles from './PrestamosPage.module.css';
 
-export {
-  crearModeloPrestamosPage,
-  agregarPrestamoModelo,
-} from './prestamosPage.model.js';
-
 const FILTROS_ESTADO = [
   { value: 'SOLICITADO', label: 'Solicitados' },
   { value: 'ACTIVO', label: 'Activos' },

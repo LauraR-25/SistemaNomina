@@ -27,11 +27,6 @@ import {
 } from './cuotasPrestamoPage.model.js';
 import styles from './CuotasPrestamoPage.module.css';
 
-export {
-  crearModeloCuotasPrestamoPage,
-  actualizarCuotasPrestamoModelo,
-} from './cuotasPrestamoPage.model.js';
-
 const FILTROS_ESTADO = [
   { value: 'PENDIENTE', label: 'Pendientes' },
   { value: 'DESCONTADA', label: 'Descontadas' },
@@ -47,11 +42,13 @@ export function CuotasPrestamoPage({ onNavegar }) {
     error,
     cargarPrestamos,
   } = usePrestamos(empresa?.id);
-  const [modelo, setModelo] = useState(() => crearModeloCuotasPrestamoPage());
+  const [modeloEstado, setModelo] = useState(() => ({
+    clave: null,
+    modelo: crearModeloCuotasPrestamoPage(),
+  }));
   const [prestamoId, setPrestamoId] = useState(() =>
     sessionStorage.getItem('prestamoActivoId')
   );
-  const [generadoPara, setGeneradoPara] = useState(null);
   const [filtroEstado, setFiltroEstado] = useState('');
   const [cuotaEditada, setCuotaEditada] = useState(null);
   const [confirmacion, setConfirmacion] = useState(null);
@@ -60,32 +57,29 @@ export function CuotasPrestamoPage({ onNavegar }) {
     cargarPrestamos();
   }, [cargarPrestamos]);
 
-  useEffect(() => {
-    if (prestamos.length === 0) return;
-    if (!prestamoId || !prestamos.some((item) => String(item.id) === String(prestamoId))) {
-      setPrestamoId(String(prestamos[0].id));
-    }
+  const { prestamoActivo, prestamoIdValido } = useMemo(() => {
+    const prestamo =
+      prestamos.find(
+        (item) => String(item.id) === String(prestamoId)
+      ) ?? prestamos[0] ?? null;
+
+    return {
+      prestamoActivo: prestamo,
+      prestamoIdValido: prestamo ? String(prestamo.id) : prestamoId ?? '',
+    };
   }, [prestamos, prestamoId]);
 
-  const prestamoActivo = useMemo(
-    () =>
-      prestamos.find(
-        (prestamo) => String(prestamo.id) === String(prestamoId)
-      ) ?? null,
-    [prestamos, prestamoId]
+  const clavePrestamo = prestamoActivo ? String(prestamoActivo.id) : '';
+  const cuotasGeneradas = useMemo(
+    () => generarCuotasPrestamo(prestamoActivo ?? {}),
+    [prestamoActivo]
   );
-
-  useEffect(() => {
-    if (!prestamoActivo) return;
-
-    const clave = String(prestamoActivo.id);
-    if (generadoPara === clave) return;
-
-    setModelo(
-      crearModeloCuotasPrestamoPage(generarCuotasPrestamo(prestamoActivo))
-    );
-    setGeneradoPara(clave);
-  }, [prestamoActivo, generadoPara]);
+  const modeloGenerado = useMemo(
+    () => crearModeloCuotasPrestamoPage(cuotasGeneradas),
+    [cuotasGeneradas]
+  );
+  const modelo =
+    modeloEstado.clave === clavePrestamo ? modeloEstado.modelo : modeloGenerado;
 
   const registros = useMemo(() => {
     if (!filtroEstado) return modelo.cuotas;
@@ -116,9 +110,18 @@ export function CuotasPrestamoPage({ onNavegar }) {
     setCuotaEditada(null);
   }
 
+  function aplicarCambios(transformar) {
+    setModelo((actual) => ({
+      clave: clavePrestamo,
+      modelo: transformar(
+        actual.clave === clavePrestamo ? actual.modelo : modeloGenerado
+      ),
+    }));
+  }
+
   function guardarCuota() {
     const monto = Number(cuotaEditada.monto_cuota);
-    setModelo((actual) =>
+    aplicarCambios((actual) =>
       actualizarCuotaModelo(actual, cuotaEditada.id, {
         fecha_vencimiento: cuotaEditada.fecha_vencimiento,
         monto_cuota: monto,
@@ -134,7 +137,7 @@ export function CuotasPrestamoPage({ onNavegar }) {
   }
 
   function descontarCuota(cuota) {
-    setModelo((actual) =>
+    aplicarCambios((actual) =>
       actualizarCuotaModelo(actual, cuota.id, {
         estado: 'DESCONTADA',
         monto_descontado: cuota.monto_cuota ?? cuota.monto ?? 0,
@@ -148,7 +151,7 @@ export function CuotasPrestamoPage({ onNavegar }) {
   }
 
   function confirmarCondonacion() {
-    setModelo((actual) =>
+    aplicarCambios((actual) =>
       actualizarCuotaModelo(actual, confirmacion.id, {
         estado: 'CONDONADA',
       })
@@ -212,7 +215,7 @@ export function CuotasPrestamoPage({ onNavegar }) {
           <>
             <Select
               size="sm"
-              value={prestamoId ?? ''}
+              value={prestamoIdValido}
               onChange={(evento) => cambiarPrestamo(evento.target.value)}
               options={opcionesPrestamos}
               placeholder="Seleccione un préstamo"

@@ -1,55 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { MODULOS_NAVEGACION } from './config/navigation.config.js';
+import { REGISTRO_PAGINAS } from './config/paginas.config.js';
 import { EmptyState } from './components/common/data/EmptyState/index.js';
 import { useAuth } from './hooks/auth-rbac/useAuth.js';
 import { MainLayout } from './layouts/MainLayout.jsx';
 import { LoginPage } from './pages/auth-rbac/LoginPage.jsx';
-import { PermisosPage } from './pages/auth-rbac/PermisosPage.jsx';
-import { PerfilesPage } from './pages/auth-rbac/PerfilesPage.jsx';
 import { SeguridadNominaPage } from './pages/auth-rbac/SeguridadNominaPage.jsx';
-import { UsuariosPage } from './pages/auth-rbac/UsuariosPage.jsx';
-import { BancosPage } from './pages/catalogos-tenant/BancosPage.jsx';
-import { CuentasBancariasPage } from './pages/catalogos-tenant/CuentasBancariasPage.jsx';
-import { EmpresasPage } from './pages/catalogos-tenant/EmpresasPage.jsx';
-import { AportesLeyPage } from './pages/conceptos-novedades-ley/AportesLeyPage.jsx';
-import { ConceptosPage } from './pages/conceptos-novedades-ley/ConceptosPage.jsx';
-import { NovedadesPage } from './pages/conceptos-novedades-ley/NovedadesPage.jsx';
-import { RegistroHorasPage } from './pages/conceptos-novedades-ley/RegistroHorasPage.jsx';
-import { DashboardPage } from './pages/dashboard/DashboardPage.jsx';
-import { PeriodosPage } from './pages/nomina-recibos/PeriodosPage.jsx';
-import { PrenominaPage } from './pages/nomina-recibos/PrenominaPage.jsx';
-import { RecibosPage } from './pages/nomina-recibos/RecibosPage.jsx';
-import { CuotasPrestamoPage } from './pages/prestamos/CuotasPrestamoPage.jsx';
-import { PrestamosPage } from './pages/prestamos/PrestamosPage.jsx';
-import { CargosPage } from './pages/rrhh-contratos/CargosPage.jsx';
-import { ContratosPage } from './pages/rrhh-contratos/ContratosPage.jsx';
-import { PersonasPage } from './pages/rrhh-contratos/PersonasPage.jsx';
 import { AccesoDenegadoPage } from './pages/system/AccesoDenegadoPage.jsx';
 import { NotFoundPage } from './pages/system/NotFoundPage.jsx';
 import { RUTAS_APP, resolverRuta } from './router/AppRouter.jsx';
-
-export const REGISTRO_PAGINAS = {
-  '/inicio|': DashboardPage,
-  '/acceso-denegado|': AccesoDenegadoPage,
-  '/catalogos|empresas': EmpresasPage,
-  '/catalogos|bancos': BancosPage,
-  '/catalogos|cuentas-bancarias': CuentasBancariasPage,
-  '/conceptos|conceptos': ConceptosPage,
-  '/conceptos|novedades': NovedadesPage,
-  '/conceptos|registro-horas': RegistroHorasPage,
-  '/conceptos|aportes-ley': AportesLeyPage,
-  '/nomina|periodos': PeriodosPage,
-  '/nomina|prenomina': PrenominaPage,
-  '/nomina|recibos': RecibosPage,
-  '/prestamos|prestamos': PrestamosPage,
-  '/prestamos|cuotas': CuotasPrestamoPage,
-  '/rrhh|personas': PersonasPage,
-  '/rrhh|cargos': CargosPage,
-  '/rrhh|contratos': ContratosPage,
-  '/seguridad|usuarios': UsuariosPage,
-  '/seguridad|perfiles': PerfilesPage,
-  '/seguridad|permisos': PermisosPage,
-};
 
 const RUTAS_DE_MODULOS = new Set(
   MODULOS_NAVEGACION.map((modulo) => modulo.ruta)
@@ -108,35 +67,23 @@ function ModuloEnConstruccion() {
 
 export function AppShell() {
   const { sesion, seguridadNominaAceptada, cerrarSesion } = useAuth();
-  const [{ ruta, subruta }, setNavegacion] = useState(() => ({
-    ruta: sesion ? '/seguridad-nomina' : '/login',
-    subruta: null,
-  }));
+  const [{ ruta: rutaSolicitada, subruta: subrutaSolicitada }, setNavegacion] =
+    useState(() => ({
+      ruta: sesion ? '/seguridad-nomina' : '/login',
+      subruta: null,
+    }));
 
-  useEffect(() => {
-    if (!sesion && ruta !== '/login') {
-      setNavegacion({ ruta: '/login', subruta: null });
-      return;
+  const { ruta, subruta } = useMemo(() => {
+    if (!sesion) return { ruta: '/login', subruta: null };
+    if (!seguridadNominaAceptada) {
+      return { ruta: '/seguridad-nomina', subruta: null };
+    }
+    if (rutaSolicitada === '/login' || rutaSolicitada === '/seguridad-nomina') {
+      return { ruta: '/inicio', subruta: null };
     }
 
-    if (
-      sesion &&
-      !seguridadNominaAceptada &&
-      ruta !== '/login' &&
-      ruta !== '/seguridad-nomina'
-    ) {
-      setNavegacion({ ruta: '/seguridad-nomina', subruta: null });
-      return;
-    }
-
-    if (
-      sesion &&
-      seguridadNominaAceptada &&
-      (ruta === '/login' || ruta === '/seguridad-nomina')
-    ) {
-      setNavegacion({ ruta: '/inicio', subruta: null });
-    }
-  }, [sesion, seguridadNominaAceptada, ruta]);
+    return { ruta: rutaSolicitada, subruta: subrutaSolicitada };
+  }, [sesion, seguridadNominaAceptada, rutaSolicitada, subrutaSolicitada]);
 
   function navegar(destino) {
     setNavegacion(dividirDestino(destino));

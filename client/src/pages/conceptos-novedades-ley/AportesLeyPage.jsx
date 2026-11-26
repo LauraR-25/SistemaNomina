@@ -26,11 +26,6 @@ import {
 } from './aportesLeyPage.model.js';
 import styles from './AportesLeyPage.module.css';
 
-export {
-  crearModeloAportesLeyPage,
-  agregarAfiliacionLeyModelo,
-} from './aportesLeyPage.model.js';
-
 const PESTANAS = [
   { id: 'tipos', label: 'Tipos de aporte', icon: 'shield' },
   { id: 'parametros', label: 'Parámetros vigentes', icon: 'settings' },

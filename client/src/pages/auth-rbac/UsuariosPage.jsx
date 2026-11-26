@@ -22,13 +22,7 @@ import {
   generarUsuariosLocales,
 } from './usuariosPage.model.js';
 import { generarPerfilesLocales } from './perfilesPage.model.js';
-import modelo from './usuariosPage.model.js';
 import styles from './UsuariosPage.module.css';
-
-export {
-  crearModeloUsuariosPage,
-  filtrarUsuariosModelo,
-} from './usuariosPage.model.js';
 
 const FILTROS_ESTADO = [
   { value: 'ACTIVO', label: 'Activos' },
@@ -40,7 +34,6 @@ export function UsuariosPage({ onNavegar }) {
   const { usuario, empresa } = useAuth();
   const { perfiles } = usePermisos();
   const { personas, cargarPersonas } = usePersonas(empresa?.id);
-  const [modeloPagina, setModelo] = useState(() => crearModeloUsuariosPage());
   const [filtroTexto, setFiltroTexto] = useState('');
   const [estadoFiltro, setEstadoFiltro] = useState('');
   const [usuarioEditado, setUsuarioEditado] = useState(null);
@@ -53,16 +46,31 @@ export function UsuariosPage({ onNavegar }) {
     () => generarPerfilesLocales(perfiles),
     [perfiles]
   );
+  const generados = useMemo(
+    () =>
+      generarUsuariosLocales({
+        usuario,
+        perfiles: perfilesDisponibles,
+        personas,
+      }),
+    [usuario, perfilesDisponibles, personas]
+  );
+  const [estadoModelo, setEstadoModelo] = useState(() => ({
+    fuente: { usuario, perfiles: perfilesDisponibles, personas },
+    modelo: crearModeloUsuariosPage(generados),
+  }));
 
-  useEffect(() => {
-    const generados = generarUsuariosLocales({
-      usuario,
-      perfiles: perfilesDisponibles,
-      personas,
-    });
-
-    setModelo((actual) => establecerUsuariosModelo(actual, generados));
-  }, [usuario, perfilesDisponibles, personas]);
+  const mismaFuente =
+    estadoModelo.fuente.usuario === usuario &&
+    estadoModelo.fuente.perfiles === perfilesDisponibles &&
+    estadoModelo.fuente.personas === personas;
+  const modeloPagina = useMemo(
+    () =>
+      mismaFuente
+        ? estadoModelo.modelo
+        : establecerUsuariosModelo(estadoModelo.modelo, generados),
+    [estadoModelo, mismaFuente, generados]
+  );
 
   const registros = useMemo(
     () =>
@@ -88,10 +96,23 @@ export function UsuariosPage({ onNavegar }) {
     setUsuarioEditado(null);
   }
 
+  function actualizarModelo(transformar) {
+    setEstadoModelo((actual) => ({
+      fuente: { usuario, perfiles: perfilesDisponibles, personas },
+      modelo: transformar(
+        actual.fuente.usuario === usuario &&
+          actual.fuente.perfiles === perfilesDisponibles &&
+          actual.fuente.personas === personas
+          ? actual.modelo
+          : establecerUsuariosModelo(actual.modelo, generados)
+      ),
+    }));
+  }
+
   function guardarUsuario(payload) {
     const esNuevo = !usuarioEditado?.id;
 
-    setModelo((actual) =>
+    actualizarModelo((actual) =>
       actualizarUsuarioModelo(
         actual,
         usuarioEditado?.id ?? null,
@@ -110,7 +131,7 @@ export function UsuariosPage({ onNavegar }) {
   }
 
   function cambiarEstado(fila) {
-    setModelo((actual) =>
+    actualizarModelo((actual) =>
       actualizarUsuarioModelo(actual, fila.id, { activo: !fila.activo })
     );
 
@@ -211,4 +232,4 @@ export function UsuariosPage({ onNavegar }) {
   );
 }
 
-export default modelo;
+export default UsuariosPage;

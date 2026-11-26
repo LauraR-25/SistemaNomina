@@ -28,11 +28,6 @@ import {
 } from './novedadesPage.model.js';
 import styles from './NovedadesPage.module.css';
 
-export {
-  crearModeloNovedadesPage,
-  agregarNovedadModelo,
-} from './novedadesPage.model.js';
-
 const FILTROS_ESTADO = [
   { value: 'PENDIENTE', label: 'Pendientes' },
   { value: 'APROBADA', label: 'Aprobadas' },

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { PerfilForm } from '../../components/auth-rbac/PerfilForm/index.js';
 import { TablaPerfiles } from '../../components/auth-rbac/TablaPerfiles/index.js';
 import {
@@ -18,27 +18,29 @@ import {
   establecerPerfilesModelo,
   generarPerfilesLocales,
 } from './perfilesPage.model.js';
-import modelo from './perfilesPage.model.js';
 import styles from './PerfilesPage.module.css';
-
-export {
-  crearModeloPerfilesPage,
-  agregarPerfilModelo,
-} from './perfilesPage.model.js';
 
 export function PerfilesPage({ onNavegar }) {
   const { notificar } = useNotificacion();
   const { perfiles } = usePermisos();
-  const [modeloPagina, setModelo] = useState(() =>
-    crearModeloPerfilesPage()
+  const generados = useMemo(
+    () => generarPerfilesLocales(perfiles),
+    [perfiles]
   );
+  const [estadoModelo, setEstadoModelo] = useState(() => ({
+    fuente: perfiles,
+    modelo: crearModeloPerfilesPage(generados),
+  }));
   const [filtroTexto, setFiltroTexto] = useState('');
   const [perfilEditado, setPerfilEditado] = useState(null);
 
-  useEffect(() => {
-    const generados = generarPerfilesLocales(perfiles);
-    setModelo((actual) => establecerPerfilesModelo(actual, generados));
-  }, [perfiles]);
+  const modeloPagina = useMemo(
+    () =>
+      estadoModelo.fuente === perfiles
+        ? estadoModelo.modelo
+        : establecerPerfilesModelo(estadoModelo.modelo, generados),
+    [estadoModelo, perfiles, generados]
+  );
 
   const registros = useMemo(() => {
     const termino = filtroTexto.trim().toLowerCase();
@@ -70,10 +72,21 @@ export function PerfilesPage({ onNavegar }) {
     setPerfilEditado(null);
   }
 
+  function actualizarModelo(transformar) {
+    setEstadoModelo((actual) => ({
+      fuente: perfiles,
+      modelo: transformar(
+        actual.fuente === perfiles
+          ? actual.modelo
+          : establecerPerfilesModelo(actual.modelo, generados)
+      ),
+    }));
+  }
+
   function guardarPerfil(payload) {
     const esNuevo = !perfilEditado?.id;
 
-    setModelo((actual) =>
+    actualizarModelo((actual) =>
       esNuevo
         ? agregarPerfilModelo(actual, payload)
         : actualizarPerfilModelo(actual, perfilEditado.id, payload)
@@ -90,7 +103,7 @@ export function PerfilesPage({ onNavegar }) {
   }
 
   function cambiarEstado(fila) {
-    setModelo((actual) =>
+    actualizarModelo((actual) =>
       actualizarPerfilModelo(actual, fila.id, { activo: !fila.activo })
     );
 
@@ -171,4 +184,4 @@ export function PerfilesPage({ onNavegar }) {
   );
 }
 
-export default modelo;
+export default PerfilesPage;

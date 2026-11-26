@@ -23,11 +23,6 @@ import {
 } from './cuentasBancariasPage.model.js';
 import styles from './CuentasBancariasPage.module.css';
 
-export {
-  crearModeloCuentasBancariasPage,
-  agregarCuentaBancariaModelo,
-} from './cuentasBancariasPage.model.js';
-
 const TIPOS_CUENTA = [
   { value: 'AHORRO', label: 'Ahorro' },
   { value: 'CORRIENTE', label: 'Corriente' },

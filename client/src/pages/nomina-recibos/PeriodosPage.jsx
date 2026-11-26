@@ -27,16 +27,7 @@ import {
   crearModeloPeriodosPage,
   establecerPeriodosModelo,
 } from './periodosPage.model.js';
-import modelo from './periodosPage.model.js';
 import styles from './PeriodosPage.module.css';
-
-export {
-  crearModeloPeriodosPage,
-  establecerPeriodosModelo,
-  agregarPeriodoModelo,
-  actualizarPeriodoModelo,
-  anularPeriodoModelo,
-} from './periodosPage.model.js';
 
 const FILTROS_ESTADO = [
   { value: 'BORRADOR', label: 'Borradores' },
@@ -52,7 +43,7 @@ export function PeriodosPage({ onNavegar }) {
   const { periodos, loading, error, cargarPeriodos } = usePeriodos(
     empresa?.id
   );
-  const [modeloPagina, setModelo] = useState(() => crearModeloPeriodosPage());
+  const [modeloEstado, setModelo] = useState(() => crearModeloPeriodosPage());
   const [filtroEstado, setFiltroEstado] = useState('');
   const [modal, setModal] = useState({ abierto: false, registro: null });
   const [detalle, setDetalle] = useState(null);
@@ -62,14 +53,15 @@ export function PeriodosPage({ onNavegar }) {
     cargarPeriodos();
   }, [cargarPeriodos]);
 
-  useEffect(() => {
-    if (periodos.length > 0 && modeloPagina.periodos.length === 0) {
-      setModelo((actual) => establecerPeriodosModelo(actual, periodos));
-    }
-  }, [periodos, modeloPagina.periodos.length]);
+  const modeloPagina = useMemo(
+    () =>
+      modeloEstado.periodos.length > 0
+        ? modeloEstado
+        : establecerPeriodosModelo(modeloEstado, periodos),
+    [modeloEstado, periodos]
+  );
 
-  const fuentePeriodos =
-    modeloPagina.periodos.length > 0 ? modeloPagina.periodos : periodos;
+  const fuentePeriodos = modeloPagina.periodos;
 
   const registros = useMemo(() => {
     if (!filtroEstado) return fuentePeriodos;
@@ -103,10 +95,15 @@ export function PeriodosPage({ onNavegar }) {
   function guardar(datos) {
     if (modal.registro) {
       setModelo((actual) =>
-        actualizarPeriodoModelo(actual, {
-          ...datos,
-          id: modal.registro.id,
-        })
+        actualizarPeriodoModelo(
+          actual.periodos.length > 0
+            ? actual
+            : establecerPeriodosModelo(actual, periodos),
+          {
+            ...datos,
+            id: modal.registro.id,
+          }
+        )
       );
       cerrarModal();
       notificar({
@@ -117,7 +114,14 @@ export function PeriodosPage({ onNavegar }) {
       return;
     }
 
-    setModelo((actual) => agregarPeriodoModelo(actual, datos));
+    setModelo((actual) =>
+      agregarPeriodoModelo(
+        actual.periodos.length > 0
+          ? actual
+          : establecerPeriodosModelo(actual, periodos),
+        datos
+      )
+    );
     cerrarModal();
     notificar({
       tipo: 'info',
@@ -127,7 +131,14 @@ export function PeriodosPage({ onNavegar }) {
   }
 
   function confirmarAnulacion() {
-    setModelo((actual) => anularPeriodoModelo(actual, confirmacion.id));
+    setModelo((actual) =>
+      anularPeriodoModelo(
+        actual.periodos.length > 0
+          ? actual
+          : establecerPeriodosModelo(actual, periodos),
+        confirmacion.id
+      )
+    );
     setConfirmacion(null);
     notificar({
       tipo: 'info',
@@ -291,4 +302,4 @@ export function PeriodosPage({ onNavegar }) {
   );
 }
 
-export default modelo;
+export default PeriodosPage;

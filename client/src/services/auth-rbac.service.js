@@ -12,6 +12,7 @@ export async function enviarLogin({ username, password }) {
   if (!response.ok || !data.ok) {
     return {
       ok: false,
+      status: response.status,
       message: data.message || 'No se pudo iniciar sesión.',
       sesion: null,
     };
@@ -19,6 +20,7 @@ export async function enviarLogin({ username, password }) {
 
   return {
     ok: true,
+    status: response.status,
     message: data.message || 'Autenticación exitosa.',
     sesion: data.sesion,
   };

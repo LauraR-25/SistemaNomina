@@ -24,11 +24,6 @@ import {
 } from './conceptosPage.model.js';
 import styles from './ConceptosPage.module.css';
 
-export {
-  crearModeloConceptosPage,
-  registrarConceptoPage,
-} from './conceptosPage.model.js';
-
 const FILTROS_TIPO = [
   { value: 'ASIGNACION', label: 'Asignaciones' },
   { value: 'DEDUCCION', label: 'Deducciones' },

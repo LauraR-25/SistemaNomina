@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ReciboDetalle } from '../../components/nomina-recibos/ReciboDetalle/index.js';
 import { TablaRecibos } from '../../components/nomina-recibos/TablaRecibos/index.js';
 import {
@@ -26,14 +26,7 @@ import {
   generarRecibosLocales,
   seleccionarReciboModelo,
 } from './recibosPage.model.js';
-import modelo from './recibosPage.model.js';
 import styles from './RecibosPage.module.css';
-
-export {
-  crearModeloRecibosPage,
-  establecerRecibosModelo,
-  seleccionarReciboModelo,
-} from './recibosPage.model.js';
 
 const FILTROS_ESTADO = [
   { value: 'PENDIENTE', label: 'Pendientes' },
@@ -48,73 +41,70 @@ export function RecibosPage({ onNavegar }) {
   const { personas, cargarPersonas } = usePersonas(empresa?.id);
   const { reciboSeleccionado, seleccionarRecibo, limpiarRecibo } =
     useRecibos();
-  const [modeloPagina, setModelo] = useState(() => crearModeloRecibosPage());
+  const modeloBase = useMemo(() => crearModeloRecibosPage(), []);
   const [filtroPeriodo, setFiltroPeriodo] = useState(
     () => sessionStorage.getItem('periodoActivoId') ?? ''
   );
   const [filtroEstado, setFiltroEstado] = useState('');
-  const [avisoLocal, setAvisoLocal] = useState(false);
+  const avisoLocal = useRef(false);
 
   useEffect(() => {
     cargarPeriodos();
     cargarPersonas();
   }, [cargarPeriodos, cargarPersonas]);
 
-  useEffect(() => {
-    if (periodos.length === 0) return;
-    if (
-      !periodos.some(
-        (periodo) => String(periodo.id) === String(filtroPeriodo)
-      )
-    ) {
-      setFiltroPeriodo(String(periodos[0].id));
-    }
-  }, [periodos, filtroPeriodo]);
-
-  const periodoActivo = useMemo(
-    () =>
+  const { periodoActivo, filtroPeriodoValido } = useMemo(() => {
+    const periodo =
       periodos.find(
-        (periodo) => String(periodo.id) === String(filtroPeriodo)
-      ) ?? null,
-    [periodos, filtroPeriodo]
-  );
+        (item) => String(item.id) === String(filtroPeriodo)
+      ) ?? periodos[0] ?? null;
+
+    return {
+      periodoActivo: periodo,
+      filtroPeriodoValido: periodo ? String(periodo.id) : filtroPeriodo,
+    };
+  }, [periodos, filtroPeriodo]);
 
   const recibosGenerados = useMemo(
     () => (periodoActivo ? generarRecibosLocales(periodoActivo, personas) : []),
     [periodoActivo, personas]
   );
 
+  const modeloPagina = useMemo(
+    () =>
+      seleccionarReciboModelo(
+        establecerRecibosModelo(modeloBase, recibosGenerados),
+        reciboSeleccionado
+      ),
+    [modeloBase, recibosGenerados, reciboSeleccionado]
+  );
+
   useEffect(() => {
     limpiarRecibo();
-    setModelo((actual) =>
-      seleccionarReciboModelo(
-        establecerRecibosModelo(actual, recibosGenerados),
-        null
-      )
-    );
   }, [recibosGenerados, limpiarRecibo]);
 
   useEffect(() => {
-    if (avisoLocal || recibosGenerados.length === 0) return;
+    if (avisoLocal.current || recibosGenerados.length === 0) return;
 
+    avisoLocal.current = true;
     notificar({
       tipo: 'info',
       titulo: 'Recibos generados localmente',
       mensaje: 'El endpoint de recibos aún está pendiente.',
     });
-    setAvisoLocal(true);
-  }, [recibosGenerados.length, avisoLocal, notificar]);
+  }, [recibosGenerados.length, notificar]);
 
   const registros = useMemo(() => {
     return modeloPagina.recibos.filter((recibo) => {
       const coincidePeriodo =
-        !filtroPeriodo || String(recibo.periodo_id) === String(filtroPeriodo);
+        !filtroPeriodoValido ||
+        String(recibo.periodo_id) === String(filtroPeriodoValido);
       const coincideEstado =
         !filtroEstado || recibo.estado === filtroEstado;
 
       return coincidePeriodo && coincideEstado;
     });
-  }, [modeloPagina.recibos, filtroPeriodo, filtroEstado]);
+  }, [modeloPagina.recibos, filtroPeriodoValido, filtroEstado]);
 
   const tabla = useTablaControles(registros, {
     campos: [
@@ -138,12 +128,10 @@ export function RecibosPage({ onNavegar }) {
 
   function abrirRecibo(recibo) {
     seleccionarRecibo(recibo);
-    setModelo((actual) => seleccionarReciboModelo(actual, recibo));
   }
 
   function cerrarRecibo() {
     limpiarRecibo();
-    setModelo((actual) => seleccionarReciboModelo(actual, null));
   }
 
   const opcionesPeriodos = periodos.map((periodo) => ({
@@ -179,7 +167,7 @@ export function RecibosPage({ onNavegar }) {
           <>
             <Select
               size="sm"
-              value={filtroPeriodo}
+              value={filtroPeriodoValido}
               onChange={(evento) => cambiarPeriodo(evento.target.value)}
               options={opcionesPeriodos}
               placeholder="Seleccione un período"
@@ -246,4 +234,4 @@ export function RecibosPage({ onNavegar }) {
   );
 }
 
-export default modelo;
+export default RecibosPage;

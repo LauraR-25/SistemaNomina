@@ -36,6 +36,7 @@ export async function procesarLoginPage(modeloActual, { username, password }) {
         loading: false,
         notificacion: {
           tipo: 'error',
+          status: resultado.status,
           mensaje: resultado.message,
         },
       },
@@ -70,7 +71,19 @@ export function confirmarSeguridadNominaPage(modeloActual) {
   };
 }
 
-export function obtenerMensajeLogin(mensaje) {
+export function obtenerMensajeLogin(mensaje, status) {
+  if (status === 401) {
+    return 'Usuario o clave incorrectos. Revisa tus credenciales e inténtalo nuevamente.';
+  }
+
+  if (status === 403) {
+    return 'El usuario se encuentra inactivo. Contacta al administrador para reactivarlo.';
+  }
+
+  if (status === 423) {
+    return 'Tu usuario está bloqueado temporalmente por 15 minutos tras varios intentos fallidos. Inténtalo de nuevo más tarde.';
+  }
+
   const texto = String(mensaje ?? '').trim();
 
   if (/bloque|intentos fallidos|15 minutos/i.test(texto)) {
@@ -92,16 +105,18 @@ export function obtenerMensajeLogin(mensaje) {
   return texto || 'No se pudo iniciar sesión. Inténtalo de nuevo.';
 }
 
-export function resolverNotificacionLogin(notificacion) {
+export function resolverNotificacionLogin(notificacion, status) {
   if (!notificacion?.mensaje) return null;
 
   if (notificacion.tipo === 'exito') {
     return { tipo: 'exito', mensaje: 'Autenticación exitosa' };
   }
 
+  const codigo = status ?? notificacion.status;
+
   return {
     tipo: 'error',
-    mensaje: obtenerMensajeLogin(notificacion.mensaje),
+    mensaje: obtenerMensajeLogin(notificacion.mensaje, codigo),
   };
 }
 
