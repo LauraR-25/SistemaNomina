@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-5);
-  background: rgba(16, 17, 19, 0.72);
+  background: var(--overlay-scrim);
   backdrop-filter: blur(3px);
   animation: aparecer var(--duration-base) var(--ease);
 }
@@ -111,7 +111,7 @@
   gap: var(--space-3);
   padding: var(--space-4) var(--space-6);
   border-top: 1px solid var(--border-subtle);
-  background: rgba(16, 17, 19, 0.18);
+  background: var(--overlay-soft);
 }
 
 @keyframes aparecer {

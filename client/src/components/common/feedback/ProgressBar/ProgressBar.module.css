@@ -39,7 +39,7 @@
   height: 100%;
   border-radius: inherit;
   background: var(--accent);
-  box-shadow: 0 0 10px rgba(163, 255, 18, 0.35);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 35%, transparent);
   transition: width var(--duration-base) var(--ease);
 }
 

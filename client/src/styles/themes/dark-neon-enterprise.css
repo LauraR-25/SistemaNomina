@@ -9,20 +9,29 @@
 
   --accent: var(--palette-neon);
   --accent-contrast: var(--palette-carbon);
-  --accent-soft: rgba(163, 255, 18, 0.14);
+  --accent-soft: color-mix(in srgb, var(--palette-neon) 14%, transparent);
 
-  --border-subtle: rgba(165, 171, 177, 0.14);
-  --border-strong: rgba(165, 171, 177, 0.36);
-  --hover-overlay: rgba(165, 171, 177, 0.08);
-  --focus-ring: rgba(163, 255, 18, 0.55);
-  --disabled: rgba(165, 171, 177, 0.42);
+  --border-subtle: color-mix(in srgb, var(--palette-muted) 14%, transparent);
+  --border-strong: color-mix(in srgb, var(--palette-muted) 36%, transparent);
+  --hover-overlay: color-mix(in srgb, var(--palette-muted) 8%, transparent);
+  --focus-ring: color-mix(in srgb, var(--palette-neon) 55%, transparent);
+  --disabled: color-mix(in srgb, var(--palette-muted) 42%, transparent);
 
   --danger: var(--palette-danger);
-  --danger-soft: rgba(255, 90, 95, 0.14);
+  --danger-soft: color-mix(in srgb, var(--palette-danger) 14%, transparent);
   --warning: var(--palette-warning);
-  --warning-soft: rgba(255, 176, 32, 0.14);
+  --warning-soft: color-mix(in srgb, var(--palette-warning) 14%, transparent);
   --info: var(--palette-info);
-  --info-soft: rgba(90, 176, 255, 0.14);
+  --info-soft: color-mix(in srgb, var(--palette-info) 14%, transparent);
+
+  --overlay-scrim: color-mix(in srgb, var(--palette-carbon) 72%, transparent);
+  --overlay-scrim-strong: color-mix(in srgb, var(--palette-carbon) 78%, transparent);
+  --overlay-soft: color-mix(in srgb, var(--palette-carbon) 18%, transparent);
+  --shimmer-highlight: color-mix(in srgb, var(--palette-soft) 7%, transparent);
+
+  --print-bg: #fff;
+  --print-text: #000;
+  --print-border: #999;
 
   --font-sans: var(--font-family-sans);
   --font-heading: var(--font-family-heading);

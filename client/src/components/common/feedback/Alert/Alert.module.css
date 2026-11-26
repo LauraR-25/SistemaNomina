@@ -12,26 +12,26 @@
 
 .success {
   --color-alerta: var(--accent);
-  background: rgba(163, 255, 18, 0.08);
-  border-color: rgba(163, 255, 18, 0.3);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 .error {
   --color-alerta: var(--danger);
   background: var(--danger-soft);
-  border-color: rgba(255, 90, 95, 0.36);
+  border-color: color-mix(in srgb, var(--danger) 36%, transparent);
 }
 
 .warning {
   --color-alerta: var(--warning);
   background: var(--warning-soft);
-  border-color: rgba(255, 176, 32, 0.32);
+  border-color: color-mix(in srgb, var(--warning) 32%, transparent);
 }
 
 .info {
   --color-alerta: var(--info);
   background: var(--info-soft);
-  border-color: rgba(90, 176, 255, 0.3);
+  border-color: color-mix(in srgb, var(--info) 30%, transparent);
 }
 
 .icono {

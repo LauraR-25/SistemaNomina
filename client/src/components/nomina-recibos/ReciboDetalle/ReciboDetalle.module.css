@@ -217,7 +217,7 @@
 
 @media print {
   :global(body) {
-    background: #fff !important;
+    background: var(--print-bg) !important;
   }
 
   :global(body) * {
@@ -230,11 +230,11 @@
   }
 
   .documento * {
-    color: #000 !important;
+    color: var(--print-text) !important;
     background: transparent !important;
     box-shadow: none !important;
     text-shadow: none !important;
-    border-color: #999 !important;
+    border-color: var(--print-border) !important;
   }
 
   .documento {
@@ -247,8 +247,8 @@
     padding: 0;
     border: 0;
     border-radius: 0;
-    background: #fff !important;
-    color: #000 !important;
+    background: var(--print-bg) !important;
+    color: var(--print-text) !important;
   }
 
   .acciones {

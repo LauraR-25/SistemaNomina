@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { CicloPeriodoStepper } from '../../components/nomina-recibos/CicloPeriodoStepper/index.js';
-import { PeriodoForm } from '../../components/nomina-recibos/PeriodoForm.jsx';
+import { PeriodoForm } from '../../components/nomina-recibos/PeriodoForm/index.js';
 import { TablaPeriodos } from '../../components/nomina-recibos/TablaPeriodos/index.js';
 import { etiquetaPeriodo } from '../../components/nomina-recibos/nominaRecibos.helpers.js';
 import {

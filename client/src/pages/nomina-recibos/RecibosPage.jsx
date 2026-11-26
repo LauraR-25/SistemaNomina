@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ReciboDetalle } from '../../components/nomina-recibos/ReciboDetalle.jsx';
+import { ReciboDetalle } from '../../components/nomina-recibos/ReciboDetalle/index.js';
 import { TablaRecibos } from '../../components/nomina-recibos/TablaRecibos/index.js';
 import {
   etiquetaPeriodo,
