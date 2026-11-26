@@ -1,0 +1,72 @@
+.loader {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+}
+
+.inline {
+  display: inline-flex;
+}
+
+.bloque {
+  display: flex;
+  width: 100%;
+  min-height: 160px;
+  padding: var(--space-6);
+}
+
+.pantalla {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-modal) + 5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  background: rgba(16, 17, 19, 0.78);
+  backdrop-filter: blur(2px);
+  color: var(--text-primary);
+  font-size: var(--text-base);
+}
+
+.spinner {
+  display: inline-block;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--accent-soft);
+  border-top-color: var(--accent);
+  border-radius: var(--radius-pill);
+  animation: girar 700ms linear infinite;
+}
+
+.sm {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+}
+
+.lg {
+  width: 36px;
+  height: 36px;
+  border-width: 3px;
+}
+
+.mensaje {
+  color: inherit;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 1600ms;
+  }
+}

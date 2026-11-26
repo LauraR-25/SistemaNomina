@@ -1,0 +1,75 @@
+.envoltorio {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  transition: border-color var(--duration-fast) var(--ease),
+    box-shadow var(--duration-fast) var(--ease);
+}
+
+.envoltorio:focus-within {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-glow);
+}
+
+.sm {
+  min-height: 32px;
+}
+
+.md {
+  min-height: 40px;
+}
+
+.lg {
+  min-height: 48px;
+}
+
+.anchoCompleto {
+  width: 100%;
+}
+
+.select {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 0 var(--space-8) 0 var(--space-3);
+  appearance: none;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.select:disabled {
+  cursor: not-allowed;
+  color: var(--disabled);
+}
+
+.select option {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+.chevron {
+  position: absolute;
+  right: var(--space-3);
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.error {
+  border-color: var(--danger);
+}
+
+.error:focus-within {
+  border-color: var(--danger);
+}
+
+.deshabilitado {
+  opacity: 0.6;
+}

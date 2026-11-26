@@ -1,0 +1,132 @@
+.contenedor {
+  position: relative;
+  display: inline-flex;
+}
+
+.envoltorio {
+  display: inline-flex;
+}
+
+.disparador {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 36px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease);
+}
+
+.disparador:hover {
+  background: var(--hover-overlay);
+  border-color: var(--border-strong);
+}
+
+.disparador:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  z-index: var(--z-dropdown);
+  min-width: 200px;
+  max-width: min(320px, calc(100vw - var(--space-8)));
+  padding: var(--space-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-lg);
+  animation: aparecer var(--duration-fast) var(--ease);
+}
+
+.inicio {
+  left: 0;
+}
+
+.fin {
+  right: 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 36px;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease);
+}
+
+.item:hover,
+.item:focus-visible {
+  background: var(--hover-overlay);
+  outline: none;
+}
+
+.item:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--focus-ring);
+}
+
+.item:disabled {
+  color: var(--disabled);
+  cursor: not-allowed;
+}
+
+.item:disabled:hover {
+  background: transparent;
+}
+
+.icono {
+  display: flex;
+  flex: none;
+  color: var(--text-secondary);
+}
+
+.peligro {
+  color: var(--danger);
+}
+
+.peligro .icono {
+  color: var(--danger);
+}
+
+.peligro:hover,
+.peligro:focus-visible {
+  background: var(--danger-soft);
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu {
+    animation: none;
+  }
+}

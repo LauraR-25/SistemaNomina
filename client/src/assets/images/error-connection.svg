@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-labelledby="titulo">
+  <title id="titulo">Error de conexión</title>
+  <rect x="30" y="24" width="180" height="112" rx="14" fill="#1B1E21" stroke="#292D31" stroke-width="2" />
+  <path
+    d="M56 88h44M124 88h60"
+    fill="none"
+    stroke="#A5ABB1"
+    stroke-width="4"
+    stroke-linecap="round"
+    opacity="0.5"
+  />
+  <rect x="100" y="66" width="40" height="44" rx="8" fill="#101113" stroke="#A5ABB1" stroke-width="3" />
+  <path d="M108 78h24M108 88h24M108 98h14" fill="none" stroke="#A5ABB1" stroke-width="3" stroke-linecap="round" />
+  <path d="M78 50 66 38M162 50l12-12" fill="none" stroke="#FF5A5F" stroke-width="4" stroke-linecap="round" />
+  <path d="M120 30 106 54h28z" fill="#101113" stroke="#FF5A5F" stroke-width="3" stroke-linejoin="round" />
+  <path d="M120 40v7M120 51h.01" fill="none" stroke="#FF5A5F" stroke-width="3" stroke-linecap="round" />
+</svg>

@@ -1,0 +1,7 @@
+:root {
+  --z-sidebar: 20;
+  --z-topbar: 30;
+  --z-dropdown: 40;
+  --z-modal: 50;
+  --z-toast: 60;
+}

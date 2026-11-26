@@ -1,0 +1,29 @@
+:root,
+:root[data-theme='dark-neon-enterprise'] {
+  --bg-app: var(--palette-carbon);
+  --bg-surface: var(--palette-dark);
+  --bg-card: var(--palette-panel);
+
+  --text-primary: var(--palette-soft);
+  --text-secondary: var(--palette-muted);
+
+  --accent: var(--palette-neon);
+  --accent-contrast: var(--palette-carbon);
+  --accent-soft: rgba(163, 255, 18, 0.14);
+
+  --border-subtle: rgba(165, 171, 177, 0.14);
+  --border-strong: rgba(165, 171, 177, 0.36);
+  --hover-overlay: rgba(165, 171, 177, 0.08);
+  --focus-ring: rgba(163, 255, 18, 0.55);
+  --disabled: rgba(165, 171, 177, 0.42);
+
+  --danger: var(--palette-danger);
+  --danger-soft: rgba(255, 90, 95, 0.14);
+  --warning: var(--palette-warning);
+  --warning-soft: rgba(255, 176, 32, 0.14);
+  --info: var(--palette-info);
+  --info-soft: rgba(90, 176, 255, 0.14);
+
+  --font-sans: var(--font-family-sans);
+  --font-heading: var(--font-family-heading);
+}

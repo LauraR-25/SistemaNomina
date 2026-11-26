@@ -1,0 +1,122 @@
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-4);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.titulo {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+}
+
+.icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.valor {
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-extrabold);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--leading-tight);
+  overflow-wrap: anywhere;
+}
+
+.variacion {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.positiva {
+  color: var(--accent);
+}
+
+.negativa {
+  color: var(--danger);
+}
+
+.flecha {
+  flex: none;
+}
+
+.flechaNegativa {
+  flex: none;
+  transform: rotate(180deg);
+}
+
+.sparkline {
+  height: 40px;
+  margin-top: auto;
+}
+
+.sparkline svg {
+  width: 100%;
+  height: 100%;
+}
+
+.cargando {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.skeleton {
+  display: block;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--hover-overlay),
+    var(--border-subtle),
+    var(--hover-overlay)
+  );
+  background-size: 200% 100%;
+  animation: destellar 1400ms ease-in-out infinite;
+}
+
+.skeletonValor {
+  width: 65%;
+  height: 32px;
+}
+
+.skeletonTexto {
+  width: 40%;
+  height: 14px;
+}
+
+@keyframes destellar {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .valor {
+    font-size: var(--text-2xl);
+  }
+}

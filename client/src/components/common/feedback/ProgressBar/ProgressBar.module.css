@@ -1,0 +1,66 @@
+.contenedor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  font-family: var(--font-sans);
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.etiqueta {
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+}
+
+.porcentaje {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--weight-semibold);
+}
+
+.pista {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+}
+
+.barra {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  box-shadow: 0 0 10px rgba(163, 255, 18, 0.35);
+  transition: width var(--duration-base) var(--ease);
+}
+
+.indeterminada {
+  width: 35% !important;
+  animation: desplazar 1.2s var(--ease) infinite;
+}
+
+@keyframes desplazar {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(310%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .barra,
+  .indeterminada {
+    transition: none;
+    animation: none;
+  }
+}

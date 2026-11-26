@@ -1,0 +1,11 @@
+:root {
+  --palette-carbon: #101113;
+  --palette-dark: #1B1E21;
+  --palette-panel: #292D31;
+  --palette-muted: #A5ABB1;
+  --palette-soft: #F5F7F5;
+  --palette-neon: #A3FF12;
+  --palette-danger: #FF5A5F;
+  --palette-warning: #FFB020;
+  --palette-info: #5AB0FF;
+}

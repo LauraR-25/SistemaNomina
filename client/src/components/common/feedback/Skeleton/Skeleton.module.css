@@ -1,0 +1,81 @@
+.skeleton,
+.bloque .linea {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+}
+
+.skeleton::after,
+.bloque .linea::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(245, 247, 245, 0.07),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+.linea {
+  width: 100%;
+  height: 12px;
+}
+
+.circulo {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+}
+
+.rectangulo {
+  width: 100%;
+  height: 96px;
+  border-radius: var(--radius-md);
+}
+
+.bloque {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 96px;
+}
+
+.bloque .linea {
+  display: block;
+  height: 12px;
+}
+
+.tarjeta {
+  padding: var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.tabla {
+  padding: var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.tabla .linea {
+  height: 16px;
+}
+
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after,
+  .bloque .linea::after {
+    animation: none;
+  }
+}

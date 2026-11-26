@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 64" role="img" aria-labelledby="titulo">
+  <title id="titulo">Nómina Multiempresa</title>
+  <rect width="64" height="64" rx="14" fill="#101113" />
+  <path d="M20 44V20h5l14 17V20h5v24h-5L25 27v17z" fill="#A3FF12" />
+  <text
+    x="78"
+    y="39"
+    fill="#F5F7F5"
+    font-family="Manrope, Inter, sans-serif"
+    font-size="21"
+    font-weight="700"
+  >
+    Nómina
+  </text>
+  <text
+    x="170"
+    y="39"
+    fill="#A5ABB1"
+    font-family="Inter, sans-serif"
+    font-size="21"
+    font-weight="500"
+  >
+    Multiempresa
+  </text>
+  <rect x="78" y="48" width="118" height="3" rx="1.5" fill="#A3FF12" />
+</svg>

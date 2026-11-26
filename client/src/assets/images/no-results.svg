@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-labelledby="titulo">
+  <title id="titulo">Sin resultados de búsqueda</title>
+  <rect x="30" y="24" width="180" height="112" rx="14" fill="#1B1E21" stroke="#292D31" stroke-width="2" />
+  <path
+    d="M58 52h56M58 68h40M58 84h64M58 100h34"
+    fill="none"
+    stroke="#A5ABB1"
+    stroke-width="4"
+    stroke-linecap="round"
+    opacity="0.4"
+  />
+  <circle cx="154" cy="86" r="29" fill="#101113" stroke="#A3FF12" stroke-width="4" />
+  <path d="m175 107 18 18" fill="none" stroke="#A3FF12" stroke-width="6" stroke-linecap="round" />
+  <path d="M145 77l18 18M163 77l-18 18" fill="none" stroke="#A5ABB1" stroke-width="4" stroke-linecap="round" />
+</svg>
