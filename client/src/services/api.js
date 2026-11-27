@@ -80,3 +80,8 @@ export const api = {
 };
 
 export default api;
+export const get = api.get;
+export const post = api.post;
+export const put = api.put;
+export const patch = api.patch;
+export const del = api.delete;

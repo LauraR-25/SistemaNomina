@@ -1,4 +1,4 @@
-﻿export * from './Checkbox/index.js';
+export * from './Checkbox/index.js';
 export * from './DateInput/index.js';
 export * from './FilterBar/index.js';
 export * from './FormField/index.js';

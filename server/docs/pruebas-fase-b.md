@@ -1,4 +1,4 @@
-﻿# Pruebas manuales Fase B (Catálogos y empresas)
+# Pruebas manuales Fase B (Catálogos y empresas)
 
 ## Convenciones usadas
 - Base URL: `http://localhost:3000/api`

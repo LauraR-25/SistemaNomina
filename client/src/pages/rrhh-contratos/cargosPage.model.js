@@ -1,41 +1,23 @@
-import { crearEstadoCargo } from '../../components/rrhh-contratos/CargoForm/index.js';
-
 export function crearModeloCargosPage(cargos = []) {
   return {
     titulo: 'Catálogo de Cargos',
     cargos,
-    formulario: crearEstadoCargo(),
   };
 }
 
 export function agregarCargoModelo(modeloActual, cargo) {
-  return {
-    ...modeloActual,
-    cargos: [...modeloActual.cargos, cargo],
-    formulario: crearEstadoCargo(),
-  };
+  return { ...modeloActual, cargos: [...modeloActual.cargos, cargo] };
 }
 
 export function actualizarCargoModelo(modeloActual, cargo) {
   return {
     ...modeloActual,
-    cargos: modeloActual.cargos.map((item) =>
-      item.id === cargo.id ? { ...item, ...cargo } : item
-    ),
-    formulario: crearEstadoCargo(),
+    cargos: modeloActual.cargos.map((item) => (String(item.id) === String(cargo.id) ? { ...item, ...cargo } : item)),
   };
 }
 
 export function eliminarCargoModelo(modeloActual, id) {
-  return {
-    ...modeloActual,
-    cargos: modeloActual.cargos.filter((item) => item.id !== id),
-  };
+  return { ...modeloActual, cargos: modeloActual.cargos.filter((item) => String(item.id) !== String(id)) };
 }
 
-export default {
-  crearModeloCargosPage,
-  agregarCargoModelo,
-  actualizarCargoModelo,
-  eliminarCargoModelo,
-};
+export default { crearModeloCargosPage, agregarCargoModelo, actualizarCargoModelo, eliminarCargoModelo };

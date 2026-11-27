@@ -1,7 +1,4 @@
-import {
-  crearEstadoContrato,
-  prepararPayloadContrato,
-} from '../../components/rrhh-contratos/ContratoForm/index.js';
+import { crearEstadoContrato } from '../../components/rrhh-contratos/ContratoForm/index.js';
 import { ordenarHistorialSalarios } from '../../components/rrhh-contratos/SalarioHistorial/index.js';
 
 export function crearModeloContratosPage(contratos = [], historialSalarios = []) {
@@ -13,52 +10,23 @@ export function crearModeloContratosPage(contratos = [], historialSalarios = [])
   };
 }
 
-function crearRegistroSalario(contrato, datosFormulario) {
-  const monto = Number(datosFormulario.salario_base ?? datosFormulario.salario);
-
-  if (!Number.isFinite(monto)) return null;
-
-  return {
-    id: `salario-${contrato.id}`,
-    contrato_id: contrato.id,
-    persona_id: contrato.persona_id ?? null,
-    monto,
-    vigente_desde: contrato.fecha_inicio ?? null,
-    vigente_hasta: null,
-    motivo: 'Salario inicial del contrato',
-  };
-}
-
-export function agregarContratoModelo(modeloActual, datosFormulario) {
-  const payload = prepararPayloadContrato(datosFormulario);
-  const nuevoContrato = {
-    id: Date.now(),
-    ...payload,
-  };
-  const registroSalario = crearRegistroSalario(nuevoContrato, payload);
-
+export function agregarContratoModelo(modeloActual, contrato) {
   return {
     ...modeloActual,
-    contratos: [...modeloActual.contratos, nuevoContrato],
-    historialSalarios: registroSalario
-      ? [...modeloActual.historialSalarios, registroSalario]
-      : modeloActual.historialSalarios,
+    contratos: [...modeloActual.contratos, contrato],
+    historialSalarios: ordenarHistorialSalarios([...(modeloActual.historialSalarios || []), ...(contrato?.historial_salarios || [])]),
     formulario: crearEstadoContrato(),
   };
 }
 
-export function actualizarContratoModelo(modeloActual, datosFormulario) {
-  const contratoActual = modeloActual.contratos.find(
-    (item) => item.id === datosFormulario.id
-  );
-  const payload = prepararPayloadContrato(datosFormulario);
-  const contrato = { ...contratoActual, ...payload, id: datosFormulario.id };
-
+export function actualizarContratoModelo(modeloActual, contrato) {
   return {
     ...modeloActual,
-    contratos: modeloActual.contratos.map((item) =>
-      item.id === contrato.id ? contrato : item
-    ),
+    contratos: modeloActual.contratos.map((item) => String(item.id) === String(contrato.id) ? contrato : item),
+    historialSalarios: ordenarHistorialSalarios([
+      ...(modeloActual.historialSalarios || []).filter((h) => String(h.contrato_id) !== String(contrato.id)),
+      ...(contrato?.historial_salarios || []),
+    ]),
     formulario: crearEstadoContrato(),
   };
 }
@@ -66,16 +34,9 @@ export function actualizarContratoModelo(modeloActual, datosFormulario) {
 export function eliminarContratoModelo(modeloActual, id) {
   return {
     ...modeloActual,
-    contratos: modeloActual.contratos.filter((item) => item.id !== id),
-    historialSalarios: modeloActual.historialSalarios.filter(
-      (item) => String(item.contrato_id) !== String(id)
-    ),
+    contratos: modeloActual.contratos.filter((item) => String(item.id) !== String(id)),
+    historialSalarios: (modeloActual.historialSalarios || []).filter((item) => String(item.contrato_id) !== String(id)),
   };
 }
 
-export default {
-  crearModeloContratosPage,
-  agregarContratoModelo,
-  actualizarContratoModelo,
-  eliminarContratoModelo,
-};
+export default { crearModeloContratosPage, agregarContratoModelo, actualizarContratoModelo, eliminarContratoModelo };

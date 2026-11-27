@@ -1,4 +1,4 @@
-﻿export * from './CicloPeriodoStepper/index.js';
+export * from './CicloPeriodoStepper/index.js';
 export * from './PeriodoForm/index.js';
 export * from './ProcesarNominaDialog/index.js';
 export * from './ReciboDetalle/index.js';

@@ -1,4 +1,4 @@
-﻿export * from './LoginForm/index.js';
+export * from './LoginForm/index.js';
 export * from './PerfilForm/index.js';
 export * from './PermisosTree/index.js';
 export * from './SeguridadNominaPanel/index.js';

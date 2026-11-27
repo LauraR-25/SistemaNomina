@@ -1,9 +1,5 @@
-import {
-  crearEstadoPersona,
-  prepararPayloadPersona,
-} from '../../components/rrhh-contratos/PersonaForm/index.js';
+import { crearEstadoPersona, prepararPayloadPersona } from '../../components/rrhh-contratos/PersonaForm/index.js';
 import { ordenarHistorialSalarios } from '../../components/rrhh-contratos/SalarioHistorial/index.js';
-import { api } from '../../services/api.js';
 
 export function crearModeloPersonasPage(personas = [], historialSalarios = []) {
   return {
@@ -15,26 +11,19 @@ export function crearModeloPersonasPage(personas = [], historialSalarios = []) {
   };
 }
 
-export async function registrarPersonaPage(modeloActual, datosFormulario) {
+export async function registrarPersonaPage(modeloActual, datosFormulario, crearPersona) {
   const payload = prepararPayloadPersona(datosFormulario);
-  const respuesta = await api.post('/rrhh/personas', payload);
-
-  if (!respuesta.ok) {
+  try {
+    const respuesta = await crearPersona(payload);
     return {
       ...modeloActual,
-      mensaje: { tipo: 'error', texto: respuesta.message },
+      personas: respuesta?.data ? [...modeloActual.personas, respuesta.data] : modeloActual.personas,
+      formulario: crearEstadoPersona(),
+      mensaje: { tipo: 'exito', texto: respuesta?.message || 'Persona registrada.' },
     };
+  } catch (err) {
+    return { ...modeloActual, mensaje: { tipo: 'error', texto: err.message || 'No se pudo registrar la persona.' } };
   }
-
-  return {
-    ...modeloActual,
-    personas: [...modeloActual.personas, respuesta.data],
-    formulario: crearEstadoPersona(),
-    mensaje: { tipo: 'exito', texto: respuesta.message },
-  };
 }
 
-export default {
-  crearModeloPersonasPage,
-  registrarPersonaPage,
-};
+export default { crearModeloPersonasPage, registrarPersonaPage };

@@ -1,4 +1,4 @@
-﻿export * from './AfiliacionLeyForm/index.js';
+export * from './AfiliacionLeyForm/index.js';
 export * from './ConceptoForm/index.js';
 export * from './HorasForm/index.js';
 export * from './NovedadForm/index.js';

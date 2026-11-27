@@ -1,4 +1,4 @@
-﻿export * from './CargoForm/index.js';
+export * from './CargoForm/index.js';
 export * from './ContratoForm/index.js';
 export * from './PersonaForm/index.js';
 export * from './SalarioHistorial/index.js';

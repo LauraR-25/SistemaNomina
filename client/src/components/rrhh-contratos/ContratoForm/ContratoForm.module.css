@@ -21,3 +21,5 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.aviso{padding:10px 12px;border:1px dashed var(--color-border);border-radius:8px;color:var(--color-text-muted);font-size:13px}

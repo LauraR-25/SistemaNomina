@@ -1,4 +1,4 @@
-﻿export * from './Avatar/index.js';
+export * from './Avatar/index.js';
 export * from './Badge/index.js';
 export * from './Button/index.js';
 export * from './Card/index.js';

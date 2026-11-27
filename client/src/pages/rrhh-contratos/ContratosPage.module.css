@@ -1,61 +1,12 @@
-.pagina {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-}
-
-.contenido {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.formulario,
-.detalle {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.datos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.resumen {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-3);
-  margin: 0;
-}
-
-.resumen div {
-  padding: var(--space-3);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-}
-
-.resumen dt {
-  color: var(--text-secondary);
-  font-size: var(--text-xs);
-  text-transform: uppercase;
-}
-
-.resumen dd {
-  margin: var(--space-1) 0 0;
-  color: var(--text-primary);
-  font-weight: var(--weight-semibold);
-}
-
-.subtitulo {
-  margin: 0;
-  color: var(--text-primary);
-  font-size: var(--text-base);
-}
-
-@media (max-width: 640px) {
-  .resumen {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
+.contenido{display:flex;flex-direction:column;gap:12px}
+.detalle{display:flex;flex-direction:column;gap:14px}
+.datos{display:flex;gap:8px;flex-wrap:wrap}
+.resumen{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:0}
+.resumen dt{font-size:12px;color:var(--color-text-muted)}
+.resumen dd{margin:2px 0 0;font-size:14px}
+.subtitulo{margin:0;font-size:15px}
+.subtituloRow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.formCambioSalario{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;padding:12px;border:1px solid var(--color-border);border-radius:8px}
+.accionesCambio{display:flex;align-items:flex-end}
+.formulario{display:flex;flex-direction:column;gap:12px}
+.aviso{padding:10px 12px;border:1px dashed var(--color-border);border-radius:8px;color:var(--color-text-muted);font-size:13px}

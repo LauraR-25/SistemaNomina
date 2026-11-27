@@ -1,4 +1,4 @@
-﻿export * from './Alert/index.js';
+export * from './Alert/index.js';
 export * from './ErrorBoundary/index.js';
 export * from './Loader/index.js';
 export * from './ProgressBar/index.js';
