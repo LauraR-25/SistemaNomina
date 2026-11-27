@@ -18,6 +18,7 @@ const TIPOS_CUENTA = [
 export function CuentaBancariaForm({
   initialData,
   bancos = [],
+  personas = [],
   onSubmit,
   onCancel,
   loading = false,
@@ -38,6 +39,21 @@ export function CuentaBancariaForm({
 
   return (
     <form className={styles.formulario} onSubmit={manejarEnvio}>
+      <FormField label="Persona" required>
+        <Select
+          name="persona_id"
+          value={String(estado.persona_id ?? '')}
+          onChange={(evento) => actualizar('persona_id', evento.target.value)}
+          options={personas.map((persona) => ({
+            value: String(persona.id),
+            label: [persona.primer_nombre, persona.primer_apellido].filter(Boolean).join(' ') || persona.cedula || 'Persona',
+          }))}
+          placeholder="Seleccione una persona"
+          required
+          disabled={loading}
+        />
+      </FormField>
+
       <FormField label="Banco" required>
         <Select
           name="banco_id"
@@ -76,16 +92,7 @@ export function CuentaBancariaForm({
         />
       </FormField>
 
-      <FormField label="Titular" hint="Nombre del titular de la cuenta">
-        <Input
-          name="titular"
-          value={estado.titular}
-          onChange={(evento) => actualizar('titular', evento.target.value)}
-          placeholder="Nombre del titular"
-          maxLength={150}
-          disabled={loading}
-        />
-      </FormField>
+
 
       <div className={styles.opciones}>
         <Checkbox

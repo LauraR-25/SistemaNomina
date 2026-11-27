@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { EmpresaForm } from '../../components/catalogos-tenant/EmpresaForm/index.js';
 import { TablaEmpresas } from '../../components/catalogos-tenant/TablaEmpresas/index.js';
 import {
-  Badge,
   Button,
   ConfirmDialog,
   Modal,
@@ -16,6 +15,7 @@ import { useCatalogos } from '../../hooks/catalogos-tenant/useCatalogos.js';
 import { useNotificacion } from '../../hooks/ui/useNotificacion.js';
 import { useTablaControles } from '../../hooks/ui/useTablaControles.js';
 import {
+  actualizarEmpresaPage,
   crearModeloEmpresasPage,
   registrarEmpresaPage,
 } from './empresasPage.model.js';
@@ -46,20 +46,20 @@ export function EmpresasPage({ onNavegar }) {
     cargarCatalogos();
   }, [cargarCatalogos]);
 
-  const registros = useMemo(() => {
-    const lista = modelo.empresas.length > 0 ? modelo.empresas : empresas;
+  const modeloActual = useMemo(() => ({ ...modelo, empresas }), [modelo, empresas]);
 
+  const registros = useMemo(() => {
+    const lista = modeloActual.empresas;
     return filtroMoneda
       ? lista.filter((empresa) => empresa.moneda_codigo === filtroMoneda)
       : lista;
-  }, [empresas, filtroMoneda, modelo.empresas]);
+  }, [filtroMoneda, modeloActual.empresas]);
 
   const tabla = useTablaControles(registros, {
     campos: ['rif', 'razon_social', 'nombre_comercial', 'moneda_codigo'],
   });
 
   async function recargar() {
-    setModelo((actual) => ({ ...actual, empresas: [] }));
     await cargarCatalogos();
   }
 
@@ -76,40 +76,27 @@ export function EmpresasPage({ onNavegar }) {
   }
 
   async function guardar(datos) {
-    if (modal.registro) {
-      notificar({
-        tipo: 'info',
-        titulo: 'Edición pendiente',
-        mensaje: 'El endpoint para actualizar empresas aún no está disponible.',
-      });
-      cerrarModal();
-      return;
-    }
-
     setGuardando(true);
-
-    const siguiente = await registrarEmpresaPage(
-      { ...modelo, empresas },
-      datos
-    );
-
+    const siguiente = modal.registro
+      ? await actualizarEmpresaPage(modeloActual, modal.registro.id, datos)
+      : await registrarEmpresaPage(modeloActual, datos);
     setGuardando(false);
     setModelo(siguiente);
 
     if (siguiente.mensaje?.tipo === 'exito') {
       notificar({
         tipo: 'exito',
-        titulo: 'Empresa registrada',
+        titulo: modal.registro ? 'Empresa actualizada' : 'Empresa registrada',
         mensaje: siguiente.mensaje.texto,
       });
       cerrarModal();
-      recargar();
+      await recargar();
       return;
     }
 
     notificar({
       tipo: 'error',
-      titulo: 'No se pudo registrar la empresa',
+      titulo: modal.registro ? 'No se pudo actualizar la empresa' : 'No se pudo registrar la empresa',
       mensaje: siguiente.mensaje?.texto,
     });
   }
@@ -117,8 +104,8 @@ export function EmpresasPage({ onNavegar }) {
   function confirmarEliminacion() {
     notificar({
       tipo: 'info',
-      titulo: 'Eliminación pendiente',
-      mensaje: 'El endpoint para eliminar empresas aún no está disponible.',
+      titulo: 'Acción no disponible',
+      mensaje: 'Las empresas no se eliminan desde esta pantalla; se administran por activación en el catálogo.',
     });
     setConfirmacion(null);
   }
@@ -191,17 +178,12 @@ export function EmpresasPage({ onNavegar }) {
         titulo={modal.registro ? 'Editar empresa' : 'Nueva empresa'}
         descripcion={
           modal.registro
-            ? 'Actualiza los datos de la empresa seleccionada.'
+            ? 'Actualiza los datos de la empresa seleccionada. País y RIF no se cambian si hay datos dependientes.'
             : 'Completa los datos para registrar una empresa.'
         }
         size="md"
       >
         <div className={styles.formulario}>
-          {modal.registro && (
-            <Badge variant="warning" size="sm">
-              Edición pendiente de endpoint
-            </Badge>
-          )}
           <EmpresaForm
             key={modal.registro?.id ?? 'nueva'}
             initialData={modal.registro ?? undefined}

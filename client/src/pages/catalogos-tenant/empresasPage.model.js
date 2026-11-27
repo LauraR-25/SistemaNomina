@@ -32,7 +32,29 @@ export async function registrarEmpresaPage(modeloActual, datosFormulario) {
   };
 }
 
+export async function actualizarEmpresaPage(modeloActual, id, datosFormulario) {
+  const payload = prepararPayloadEmpresa(datosFormulario);
+  const respuesta = await api.patch(`/catalogos/empresas/${id}`, payload);
+
+  if (!respuesta.ok) {
+    return {
+      ...modeloActual,
+      mensaje: { tipo: 'error', texto: respuesta.message },
+    };
+  }
+
+  return {
+    ...modeloActual,
+    empresas: modeloActual.empresas.map((empresa) =>
+      String(empresa.id) === String(id) ? respuesta.data : empresa
+    ),
+    formulario: crearEstadoEmpresa(),
+    mensaje: { tipo: 'exito', texto: respuesta.message },
+  };
+}
+
 export default {
   crearModeloEmpresasPage,
   registrarEmpresaPage,
+  actualizarEmpresaPage,
 };

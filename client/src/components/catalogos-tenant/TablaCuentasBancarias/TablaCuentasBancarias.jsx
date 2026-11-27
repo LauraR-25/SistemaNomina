@@ -51,7 +51,7 @@ export function TablaCuentasBancarias({
     },
     {
       key: 'titular',
-      header: 'Titular',
+      header: 'Persona',
       sortable: true,
       render: (valor, fila) => valor || fila.persona?.nombre || '—',
     },

@@ -69,6 +69,12 @@ export const api = {
       body: JSON.stringify(body),
       headers,
     }),
+  patch: (endpoint, body, headers) =>
+    peticionApi(endpoint, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+      headers,
+    }),
   delete: (endpoint, headers) =>
     peticionApi(endpoint, { method: 'DELETE', headers }),
 };

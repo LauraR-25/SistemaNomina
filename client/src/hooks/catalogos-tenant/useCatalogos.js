@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+import { api } from '../../services/api.js';
 
 export function useCatalogos() {
   const [paises, setPaises] = useState([]);
@@ -15,16 +14,25 @@ export function useCatalogos() {
 
     try {
       const [resPaises, resBancos, resEmpresas] = await Promise.all([
-        fetch(`${API_URL}/api/catalogos/paises`).then((r) => r.json()),
-        fetch(`${API_URL}/api/catalogos/bancos`).then((r) => r.json()),
-        fetch(`${API_URL}/api/catalogos/empresas`).then((r) => r.json()),
+        api.get('/catalogos/paises'),
+        api.get('/catalogos/bancos'),
+        api.get('/catalogos/empresas'),
       ]);
 
-      setPaises(resPaises.data || []);
-      setBancos(resBancos.data || []);
-      setEmpresas(resEmpresas.data || []);
+      if (!resPaises.ok || !resBancos.ok || !resEmpresas.ok) {
+        setError(
+          resEmpresas.message || resPaises.message || resBancos.message || 'Error al cargar los catálogos.'
+        );
+      }
+
+      setPaises(resPaises.ok && Array.isArray(resPaises.data) ? resPaises.data : []);
+      setBancos(resBancos.ok && Array.isArray(resBancos.data) ? resBancos.data : []);
+      setEmpresas(resEmpresas.ok && Array.isArray(resEmpresas.data) ? resEmpresas.data : []);
     } catch {
       setError('Error al cargar los catálogos.');
+      setPaises([]);
+      setBancos([]);
+      setEmpresas([]);
     } finally {
       setLoading(false);
     }

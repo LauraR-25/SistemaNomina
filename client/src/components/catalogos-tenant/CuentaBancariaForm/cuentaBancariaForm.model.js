@@ -16,9 +16,8 @@ export function prepararPayloadCuentaBancaria(estado) {
   ).trim();
 
   return {
-    banco_id: estado.banco_id,
+    banco_id: Number(estado.banco_id),
     persona_id: estado.persona_id || null,
-    titular: String(estado.titular || '').trim(),
     numero_cuenta: numeroCuenta,
     nro_cuenta: numeroCuenta,
     tipo_cuenta: estado.tipo_cuenta || 'CORRIENTE',
