@@ -43,7 +43,7 @@ export function PerfilesPage({ onNavegar }) {
   );
 
   const registros = useMemo(() => {
-    const termino = filtroTexto.trim().toLowerCase();
+    const termino = String(filtroTexto ?? '').trim().toLowerCase();
 
     if (!termino) return modeloPagina.perfiles;
 

@@ -1,0 +1,18 @@
+.contenedor {
+  width: 100%;
+}
+
+.stack {
+  max-width: 100%;
+  margin: var(--space-3) 0 0;
+  padding: var(--space-3);
+  overflow: auto;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--text-xs);
+  line-height: var(--leading-relaxed);
+  text-align: left;
+  white-space: pre-wrap;
+}

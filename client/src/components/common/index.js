@@ -31,6 +31,7 @@ export * from './data/SummaryBar/index.js';
 
 // Feedback
 export * from './feedback/Alert/index.js';
+export * from './feedback/ErrorBoundary/index.js';
 export * from './feedback/Loader/index.js';
 export * from './feedback/ProgressBar/index.js';
 export * from './feedback/Skeleton/index.js';

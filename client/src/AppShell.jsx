@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { MODULOS_NAVEGACION } from './config/navigation.config.js';
 import { REGISTRO_PAGINAS } from './config/paginas.config.js';
 import { EmptyState } from './components/common/data/EmptyState/index.js';
+import { ErrorBoundary } from './components/common/feedback/ErrorBoundary/index.js';
 import { useAuth } from './hooks/auth-rbac/useAuth.js';
 import { MainLayout } from './layouts/MainLayout.jsx';
 import { LoginPage } from './pages/auth-rbac/LoginPage.jsx';
@@ -127,7 +128,7 @@ export function AppShell() {
         onNavegar={navegar}
         onCerrarSesion={manejarCerrarSesion}
       >
-        {contenido}
+        <ErrorBoundary key={`${ruta}|${subruta ?? ''}`}>{contenido}</ErrorBoundary>
       </MainLayout>
     );
   }

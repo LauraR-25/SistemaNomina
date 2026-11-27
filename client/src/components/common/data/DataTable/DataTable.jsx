@@ -19,9 +19,8 @@ function contenidoCelda(columna, fila, indice) {
   const valor = valorCelda(fila, columna.key);
 
   if (typeof columna.render !== 'function') return valor ?? '';
-  if (columna.render.length >= 2) return columna.render(valor, fila, indice);
 
-  return columna.render(fila, indice, valor);
+  return columna.render(valor, fila, indice);
 }
 
 function aArreglo(valor) {
