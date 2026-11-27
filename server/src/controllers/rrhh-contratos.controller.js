@@ -4,9 +4,26 @@ import {
   crearPersona,
 } from '../services/rrhh-contratos.service.js';
 
+function empresaSesion(req) {
+  return req.headers['x-empresa-id'] || req.usuario?.empresa_id || null;
+}
+
+function requerirEmpresaSesion(req, res) {
+  const empresaId = empresaSesion(req);
+  if (!empresaId) {
+    res.status(400).json({
+      ok: false,
+      message: 'Debes indicar la empresa de la sesión (x-empresa-id).',
+    });
+    return null;
+  }
+  return empresaId;
+}
+
 export async function getPersonas(req, res, next) {
   try {
-    const empresaId = req.query.empresaId || req.usuario?.empresa_id || null;
+    const empresaId = requerirEmpresaSesion(req, res);
+    if (!empresaId) return;
     const data = await listarPersonas(empresaId);
     res.json({ ok: true, data });
   } catch (err) {
@@ -15,9 +32,11 @@ export async function getPersonas(req, res, next) {
 }
 
 export async function postPersona(req, res, next) {
+  const empresaId = requerirEmpresaSesion(req, res);
+  if (!empresaId) return;
   const validacion = validarCrearPersona({
     ...req.body,
-    empresaId: req.body.empresaId || req.usuario?.empresa_id,
+    empresaId,
   });
 
   if (!validacion.valido) {

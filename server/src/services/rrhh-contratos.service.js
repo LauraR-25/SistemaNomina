@@ -1,21 +1,19 @@
 import { pool } from '../config/db.js';
 
-export async function listarPersonas(empresaId) {
-  if (empresaId) {
-    const res = await pool.query(
-      `SELECT id, empresa_id, cedula, rif, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, email, nro_tlf, estado
-       FROM persona
-       WHERE empresa_id = $1
-       ORDER BY primer_apellido ASC, primer_nombre ASC`,
-      [empresaId]
-    );
-    return res.rows;
-  }
+function errorNegocio(status, message) {
+  const err = new Error(message);
+  err.status = status;
+  return err;
+}
 
+export async function listarPersonas(empresaId) {
+  if (!empresaId) throw errorNegocio(400, 'Debes indicar la empresa de la sesión (x-empresa-id).');
   const res = await pool.query(
     `SELECT id, empresa_id, cedula, rif, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, email, nro_tlf, estado
      FROM persona
-     ORDER BY primer_apellido ASC, primer_nombre ASC`
+     WHERE empresa_id = $1
+     ORDER BY primer_apellido ASC, primer_nombre ASC`,
+    [empresaId]
   );
   return res.rows;
 }

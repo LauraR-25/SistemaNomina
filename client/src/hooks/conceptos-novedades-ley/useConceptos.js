@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+import { api } from '../../services/api.js';
 
 export function useConceptos(empresaId) {
   const [conceptos, setConceptos] = useState([]);
@@ -13,11 +12,16 @@ export function useConceptos(empresaId) {
 
     try {
       const query = empresaId ? `?empresaId=${encodeURIComponent(empresaId)}` : '';
-      const res = await fetch(`${API_URL}/api/conceptos/conceptos${query}`);
-      const data = await res.json();
-      setConceptos(data.data || []);
+      const res = await api.get(`/conceptos/conceptos${query}`);
+      if (!res.ok) {
+        setError(res.message || 'Error al cargar los conceptos.');
+        setConceptos([]);
+        return;
+      }
+      setConceptos(Array.isArray(res.data) ? res.data : []);
     } catch {
       setError('Error al cargar los conceptos.');
+      setConceptos([]);
     } finally {
       setLoading(false);
     }

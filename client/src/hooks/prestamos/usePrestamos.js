@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+import { api } from '../../services/api.js';
 
 export function usePrestamos(empresaId) {
   const [prestamos, setPrestamos] = useState([]);
@@ -13,11 +12,16 @@ export function usePrestamos(empresaId) {
 
     try {
       const query = empresaId ? `?empresaId=${encodeURIComponent(empresaId)}` : '';
-      const res = await fetch(`${API_URL}/api/prestamos${query}`);
-      const data = await res.json();
-      setPrestamos(data.data || []);
+      const res = await api.get(`/prestamos${query}`);
+      if (!res.ok) {
+        setError(res.message || 'Error al cargar los préstamos.');
+        setPrestamos([]);
+        return;
+      }
+      setPrestamos(Array.isArray(res.data) ? res.data : []);
     } catch {
       setError('Error al cargar los préstamos.');
+      setPrestamos([]);
     } finally {
       setLoading(false);
     }

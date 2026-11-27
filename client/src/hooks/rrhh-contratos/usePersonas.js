@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+import { api } from '../../services/api.js';
 
 export function usePersonas(empresaId) {
   const [personas, setPersonas] = useState([]);
@@ -13,11 +12,16 @@ export function usePersonas(empresaId) {
 
     try {
       const query = empresaId ? `?empresaId=${encodeURIComponent(empresaId)}` : '';
-      const res = await fetch(`${API_URL}/api/rrhh/personas${query}`);
-      const data = await res.json();
-      setPersonas(data.data || []);
+      const res = await api.get(`/rrhh/personas${query}`);
+      if (!res.ok) {
+        setError(res.message || 'Error al cargar las personas.');
+        setPersonas([]);
+        return;
+      }
+      setPersonas(Array.isArray(res.data) ? res.data : []);
     } catch {
       setError('Error al cargar las personas.');
+      setPersonas([]);
     } finally {
       setLoading(false);
     }

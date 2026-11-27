@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+import { api } from '../../services/api.js';
 
 export function usePeriodos(empresaId) {
   const [periodos, setPeriodos] = useState([]);
@@ -13,11 +12,16 @@ export function usePeriodos(empresaId) {
 
     try {
       const query = empresaId ? `?empresaId=${encodeURIComponent(empresaId)}` : '';
-      const res = await fetch(`${API_URL}/api/nomina/periodos${query}`);
-      const data = await res.json();
-      setPeriodos(data.data || []);
+      const res = await api.get(`/nomina/periodos${query}`);
+      if (!res.ok) {
+        setError(res.message || 'Error al cargar los períodos de nómina.');
+        setPeriodos([]);
+        return;
+      }
+      setPeriodos(Array.isArray(res.data) ? res.data : []);
     } catch {
       setError('Error al cargar los períodos de nómina.');
+      setPeriodos([]);
     } finally {
       setLoading(false);
     }
