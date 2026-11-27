@@ -16,12 +16,7 @@ import { useAuth } from '../../hooks/auth-rbac/useAuth.js';
 import { useConceptos } from '../../hooks/conceptos-novedades-ley/useConceptos.js';
 import { useNotificacion } from '../../hooks/ui/useNotificacion.js';
 import { useTablaControles } from '../../hooks/ui/useTablaControles.js';
-import {
-  actualizarConceptoModelo,
-  crearModeloConceptosPage,
-  desactivarConceptoModelo,
-  registrarConceptoPage,
-} from './conceptosPage.model.js';
+import { crearModeloConceptosPage } from './conceptosPage.model.js';
 import styles from './ConceptosPage.module.css';
 
 const FILTROS_TIPO = [
@@ -30,7 +25,26 @@ const FILTROS_TIPO = [
   { value: 'APORTE_PATRONAL', label: 'Aportes patronales' },
 ];
 
-export function ConceptosPage({ onNavegar }) {
+const FILTROS_CATEGORIA = [
+  { value: 'SALARIO_BASE', label: 'Salario base' },
+  { value: 'LEY', label: 'Ley' },
+  { value: 'OPCIONAL', label: 'Opcional' },
+  { value: 'BONO', label: 'Bono' },
+  { value: 'PRESTAMO', label: 'Préstamo' },
+  { value: 'HORA_EXTRA', label: 'Hora extra' },
+  { value: 'AJUSTE', label: 'Ajuste' },
+];
+
+const FILTROS_ESTADO = [
+  { value: 'ACTIVO', label: 'Activos' },
+  { value: 'INACTIVO', label: 'Inactivos' },
+];
+
+function esSistema(concepto) {
+  return concepto.categoria === 'LEY' || concepto.categoria === 'SALARIO_BASE';
+}
+
+export function ConceptosPage({ onNavegar, conceptosIniciales }) {
   const { notificar } = useNotificacion();
   const { empresa } = useAuth();
   const {
@@ -38,9 +52,15 @@ export function ConceptosPage({ onNavegar }) {
     loading,
     error,
     cargarConceptos,
+    crearConcepto,
+    actualizarConcepto,
+    desactivarConcepto,
+    eliminarConcepto,
   } = useConceptos(empresa?.id);
-  const [modelo, setModelo] = useState(() => crearModeloConceptosPage());
+  const [modelo] = useState(() => crearModeloConceptosPage());
   const [filtroTipo, setFiltroTipo] = useState('');
+  const [filtroCategoria, setFiltroCategoria] = useState('');
+  const [filtroEstado, setFiltroEstado] = useState('');
   const [modal, setModal] = useState({ abierto: false, registro: null });
   const [confirmacion, setConfirmacion] = useState(null);
   const [guardando, setGuardando] = useState(false);
@@ -49,25 +69,35 @@ export function ConceptosPage({ onNavegar }) {
     cargarConceptos();
   }, [cargarConceptos]);
 
-  const fuenteConceptos =
-    modelo.conceptos.length > 0 ? modelo.conceptos : conceptos;
+  const fuenteConceptos = conceptosIniciales ?? conceptos;
 
   const registros = useMemo(() => {
-    if (!filtroTipo) return fuenteConceptos;
+    let lista = fuenteConceptos;
 
-    return fuenteConceptos.filter(
-      (concepto) => concepto.tipo_concepto === filtroTipo
-    );
-  }, [filtroTipo, fuenteConceptos]);
+    if (filtroTipo) {
+      lista = lista.filter((concepto) => concepto.tipo_concepto === filtroTipo);
+    }
+    if (filtroCategoria) {
+      lista = lista.filter((concepto) => concepto.categoria === filtroCategoria);
+    }
+    if (filtroEstado) {
+      const activo = filtroEstado === 'ACTIVO';
+      lista = lista.filter((concepto) => (concepto.activo !== false) === activo);
+    }
+
+    return lista;
+  }, [fuenteConceptos, filtroTipo, filtroCategoria, filtroEstado]);
 
   const tabla = useTablaControles(registros, {
-    campos: ['codigo', 'nombre', 'tipo_concepto', 'categoria', 'naturaleza'],
+    campos: [
+      'codigo',
+      'nombre',
+      'tipo_concepto',
+      'categoria',
+      'naturaleza',
+      'unidad',
+    ],
   });
-
-  async function recargar() {
-    setModelo((actual) => ({ ...actual, conceptos: [] }));
-    await cargarConceptos();
-  }
 
   function abrirNuevo() {
     setModal({ abierto: true, registro: null });
@@ -82,56 +112,64 @@ export function ConceptosPage({ onNavegar }) {
   }
 
   async function guardar(datos) {
-    if (modal.registro) {
-      setModelo((actual) =>
-        actualizarConceptoModelo(actual, { ...datos, id: modal.registro.id })
-      );
-      cerrarModal();
+    setGuardando(true);
+    const res = modal.registro
+      ? await actualizarConcepto(modal.registro.id, datos)
+      : await crearConcepto(datos);
+    setGuardando(false);
+
+    if (!res?.ok) {
       notificar({
-        tipo: 'info',
-        titulo: 'Edición pendiente',
-        mensaje: 'El endpoint para actualizar conceptos aún no está disponible.',
+        tipo: 'error',
+        titulo: modal.registro
+          ? 'No se pudo actualizar el concepto'
+          : 'No se pudo registrar el concepto',
+        mensaje: res?.message,
       });
       return;
     }
+
+    notificar({
+      tipo: 'exito',
+      titulo: modal.registro ? 'Concepto actualizado' : 'Concepto registrado',
+      mensaje: res.message,
+    });
+    cerrarModal();
+    await cargarConceptos();
+  }
+
+  async function confirmarAccion() {
+    if (!confirmacion) return;
 
     setGuardando(true);
-    const siguiente = await registrarConceptoPage(
-      { ...modelo, conceptos: fuenteConceptos },
-      datos
-    );
+    const res =
+      confirmacion.tipo === 'eliminar'
+        ? await eliminarConcepto(confirmacion.registro.id)
+        : await desactivarConcepto(confirmacion.registro.id);
     setGuardando(false);
-    setModelo(siguiente);
 
-    if (siguiente.mensaje?.tipo === 'exito') {
+    if (!res?.ok) {
       notificar({
-        tipo: 'exito',
-        titulo: 'Concepto registrado',
-        mensaje: siguiente.mensaje.texto,
+        tipo: 'error',
+        titulo: 'No se pudo completar la acción',
+        mensaje: res?.message,
       });
-      cerrarModal();
-      recargar();
       return;
     }
 
     notificar({
-      tipo: 'error',
-      titulo: 'No se pudo registrar el concepto',
-      mensaje: siguiente.mensaje?.texto,
+      tipo: 'exito',
+      titulo:
+        confirmacion.tipo === 'eliminar'
+          ? 'Concepto eliminado'
+          : 'Concepto desactivado',
+      mensaje: res.message,
     });
+    setConfirmacion(null);
+    await cargarConceptos();
   }
 
-  function confirmarDesactivacion() {
-    setModelo((actual) =>
-      desactivarConceptoModelo(actual, confirmacion.id)
-    );
-    setConfirmacion(null);
-    notificar({
-      tipo: 'info',
-      titulo: 'Concepto desactivado localmente',
-      mensaje: 'El endpoint para desactivar conceptos aún está pendiente.',
-    });
-  }
+  const eliminarHabilitado = (registro) => !esSistema(registro);
 
   return (
     <div className={styles.pagina}>
@@ -141,7 +179,9 @@ export function ConceptosPage({ onNavegar }) {
         breadcrumbs={[
           {
             label: 'Conceptos',
-            onClick: onNavegar ? () => onNavegar('/conceptos') : undefined,
+            onClick: onNavegar
+              ? () => onNavegar({ ruta: '/conceptos', subruta: 'conceptos' })
+              : undefined,
           },
           { label: 'Conceptos' },
         ]}
@@ -166,14 +206,32 @@ export function ConceptosPage({ onNavegar }) {
           />
         }
         filters={
-          <Select
-            size="sm"
-            value={filtroTipo}
-            onChange={(evento) => setFiltroTipo(evento.target.value)}
-            options={FILTROS_TIPO}
-            placeholder="Todos los tipos"
-            aria-label="Filtrar conceptos por tipo"
-          />
+          <>
+            <Select
+              size="sm"
+              value={filtroTipo}
+              onChange={(evento) => setFiltroTipo(evento.target.value)}
+              options={FILTROS_TIPO}
+              placeholder="Todos los tipos"
+              aria-label="Filtrar conceptos por tipo"
+            />
+            <Select
+              size="sm"
+              value={filtroCategoria}
+              onChange={(evento) => setFiltroCategoria(evento.target.value)}
+              options={FILTROS_CATEGORIA}
+              placeholder="Todas las categorías"
+              aria-label="Filtrar conceptos por categoría"
+            />
+            <Select
+              size="sm"
+              value={filtroEstado}
+              onChange={(evento) => setFiltroEstado(evento.target.value)}
+              options={FILTROS_ESTADO}
+              placeholder="Todos los estados"
+              aria-label="Filtrar conceptos por estado"
+            />
+          </>
         }
       />
 
@@ -182,9 +240,16 @@ export function ConceptosPage({ onNavegar }) {
           filas={tabla.filasVisibles}
           loading={loading || guardando}
           error={error}
-          onRetry={recargar}
+          onRetry={cargarConceptos}
           onEditar={abrirEditar}
-          onEliminar={setConfirmacion}
+          onDesactivar={(registro) =>
+            setConfirmacion({ tipo: 'desactivar', registro })
+          }
+          onEliminar={(registro) =>
+            eliminarHabilitado(registro)
+              ? setConfirmacion({ tipo: 'eliminar', registro })
+              : undefined
+          }
           orden={{ key: tabla.orden.campo, dir: tabla.orden.direccion }}
           onSort={({ key }) => tabla.cambiarOrden(key)}
         />
@@ -206,9 +271,9 @@ export function ConceptosPage({ onNavegar }) {
         size="lg"
       >
         <div className={styles.formulario}>
-          {modal.registro && (
-            <Badge variant="warning" size="sm">
-              Edición pendiente de endpoint
+          {modal.registro && esSistema(modal.registro) && (
+            <Badge variant="accent" size="sm">
+              Concepto de sistema: solo se puede desactivar
             </Badge>
           )}
           <ConceptoForm
@@ -224,11 +289,22 @@ export function ConceptosPage({ onNavegar }) {
 
       <ConfirmDialog
         abierto={Boolean(confirmacion)}
-        titulo="¿Desactivar concepto?"
-        mensaje="El concepto dejará de estar activo en el listado local."
-        textoConfirmar="Desactivar"
+        titulo={
+          confirmacion?.tipo === 'eliminar'
+            ? '¿Eliminar concepto?'
+            : '¿Desactivar concepto?'
+        }
+        mensaje={
+          confirmacion?.tipo === 'eliminar'
+            ? 'El concepto se eliminará solo si no tiene usos registrados.'
+            : 'El concepto dejará de estar disponible para nuevas asignaciones.'
+        }
+        textoConfirmar={
+          confirmacion?.tipo === 'eliminar' ? 'Eliminar' : 'Desactivar'
+        }
         variante="peligro"
-        onConfirmar={confirmarDesactivacion}
+        loading={guardando}
+        onConfirmar={confirmarAccion}
         onCancelar={() => setConfirmacion(null)}
       />
     </div>

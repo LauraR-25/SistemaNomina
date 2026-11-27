@@ -8,6 +8,7 @@
     "db:migrate": "node scripts/migrate.js",
     "db:seed": "node scripts/seed.js",
     "db:seed:permisos": "node scripts/seed-permisos.js",
+    "db:seed:nomina": "node scripts/seed-nomina-base.js",
     "start": "node src/server.js",
     "dev": "node --watch src/server.js"
   },

@@ -1,5 +1,7 @@
+import { Icon } from '../../../assets/icons/Icon.jsx';
 import { DataTable } from '../../common/data/DataTable/index.js';
 import { Badge } from '../../common/ui/Badge/index.js';
+import { StatusBadge } from '../../common/ui/StatusBadge/index.js';
 import { formatFecha } from '../../../utils/formatters.js';
 import {
   etiquetaTipoConcepto,
@@ -21,10 +23,13 @@ export function TablaConceptos({
   onRetry,
   onEditar,
   onEliminar,
+  onDesactivar,
   orden,
   onSort,
 }) {
   const registros = filas ?? datos;
+  const esSistema = (concepto) =>
+    concepto.categoria === 'LEY' || concepto.categoria === 'SALARIO_BASE';
 
   const columnas = [
     {
@@ -37,6 +42,11 @@ export function TablaConceptos({
           <span className={styles.secundario}>
             {formatFecha(concepto.created_at)}
           </span>
+          {esSistema(concepto) && (
+            <Badge variant="accent" size="sm">
+              <Icon name="lock" size={13} /> Concepto de sistema
+            </Badge>
+          )}
         </div>
       ),
     },
@@ -111,9 +121,11 @@ export function TablaConceptos({
       header: 'Estado',
       sortable: true,
       render: (valor) => (
-        <Badge variant={valor === false ? 'neutral' : 'success'} size="sm" dot>
-          {valor === false ? 'Inactivo' : 'Activo'}
-        </Badge>
+        <StatusBadge
+          estado={valor === false ? 'INACTIVO' : 'ACTIVO'}
+          size="sm"
+          variant={valor === false ? 'neutral' : 'success'}
+        />
       ),
     },
   ];
@@ -135,13 +147,21 @@ export function TablaConceptos({
             icon: 'edit',
             onClick: () => onEditar(fila),
           },
-          onEliminar && {
-            id: `eliminar-${fila.id}`,
+          (onDesactivar ?? onEliminar) && {
+            id: `desactivar-${fila.id}`,
             label: 'Desactivar',
-            icon: 'trash',
+            icon: 'lock',
             danger: true,
-            onClick: () => onEliminar(fila),
+            onClick: () => (onDesactivar ?? onEliminar)(fila),
           },
+          onEliminar &&
+            !esSistema(fila) && {
+              id: `eliminar-${fila.id}`,
+              label: 'Eliminar',
+              icon: 'trash',
+              danger: true,
+              onClick: () => onEliminar(fila),
+            },
         ].filter(Boolean)
       }
       emptyTitle="Sin conceptos registrados"
